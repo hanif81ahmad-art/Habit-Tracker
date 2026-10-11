@@ -1,0 +1,3963 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ruang Tumbuh — Pelacak kebiasaan modern minimalis untuk membangun konsistensi dan pertumbuhan pribadi." />
+  <title>Ruang Tumbuh — Pelacak Kebiasaan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================
+   Ruang Tumbuh v1.1 — UI yang lebih hidup
+   ============================================ */
+
+:root {
+  --bg: #f0fdf4;
+  --bg-soft: #ecfdf5;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --primary-light: #d1fae5;
+  --primary-glow: rgba(16, 185, 129, 0.25);
+  --accent: #8b5cf6;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --warning: #f59e0b;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --sidebar-width: 270px;
+  --transition: 0.22s ease;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(16,185,129,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(139,92,246,0.06) 0%, transparent 50%);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+button, input, select, textarea { font-family: inherit; }
+
+.app { display: flex; min-height: 100vh; }
+
+/* ---- Sidebar ---- */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-width); height: 100vh;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform var(--transition);
+}
+
+.sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.35rem 1.25rem 1rem;
+}
+
+.logo { display: flex; align-items: center; gap: 0.7rem; }
+.logo-icon { font-size: 1.75rem; }
+.logo-text-wrap { display: flex; flex-direction: column; }
+.logo-text { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.03em; }
+.logo-tagline { font-size: 0.68rem; color: var(--text-muted); font-weight: 500; }
+
+.sidebar-close {
+  display: none; background: none; border: none;
+  color: var(--text-secondary); cursor: pointer; padding: 0.25rem;
+}
+
+.sidebar-nav {
+  flex: 1; padding: 0.4rem 0.75rem;
+  display: flex; flex-direction: column; gap: 0.2rem;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.65rem 0.85rem;
+  border: none; background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.875rem; font-weight: 500;
+  cursor: pointer; transition: all var(--transition);
+  text-align: left; width: 100%;
+}
+
+.nav-item:hover { background: var(--border-light); color: var(--text); }
+.nav-item.active {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: var(--primary-dark);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.15);
+}
+.nav-icon { font-size: 1.1rem; width: 1.4rem; text-align: center; }
+
+.nav-divider {
+  height: 1px; background: var(--border);
+  margin: 0.5rem 0.5rem;
+}
+
+.sidebar-footer { padding: 0.75rem 1rem 1.25rem; }
+
+.streak-card {
+  background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.15);
+}
+
+.streak-fire {
+  font-size: 1.4rem;
+  animation: flicker 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes flicker {
+  from { transform: scale(1) rotate(-3deg); }
+  to { transform: scale(1.15) rotate(3deg); }
+}
+
+.streak-value {
+  font-size: 2rem; font-weight: 800;
+  color: var(--primary-dark); line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.streak-label { font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.1rem; }
+.streak-sub { font-size: 0.68rem; color: var(--primary-dark); margin-top: 0.3rem; font-weight: 500; opacity: 0.8; }
+
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(15,23,42,0.35); z-index: 99;
+  backdrop-filter: blur(2px);
+}
+
+/* ---- Main ---- */
+.main {
+  flex: 1; margin-left: var(--sidebar-width);
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+
+.topbar {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.1rem 1.75rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+
+.menu-toggle {
+  display: none; background: none; border: none;
+  color: var(--text); cursor: pointer; padding: 0.25rem;
+}
+
+.topbar-title { flex: 1; }
+.topbar-title h1 {
+  font-size: 1.3rem; font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.topbar-date { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+.btn-icon {
+  background: none; border: none; color: var(--text-secondary);
+  cursor: pointer; padding: 0.45rem; border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-icon:hover { background: var(--border-light); color: var(--text); }
+
+.content {
+  flex: 1; padding: 1.5rem 1.75rem 3rem;
+  max-width: 780px;
+}
+
+/* ---- Pages ---- */
+.page { display: none; animation: fadeUp 0.3s ease; }
+.page.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-desc {
+  font-size: 0.875rem; color: var(--text-secondary);
+  margin-bottom: 1.25rem; line-height: 1.55;
+}
+
+/* ---- Quote Card ---- */
+.quote-card {
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  border: 1px solid #e9d5ff;
+  border-radius: var(--radius);
+  padding: 1.15rem 1.35rem;
+  margin-bottom: 1.25rem;
+  display: flex; gap: 0.85rem; align-items: flex-start;
+  box-shadow: var(--shadow-sm);
+}
+
+.quote-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+.quote-text {
+  font-size: 0.9rem; font-weight: 500; color: #5b21b6;
+  line-height: 1.55; font-style: italic;
+}
+.quote-author {
+  font-size: 0.75rem; color: #7c3aed; margin-top: 0.3rem; font-style: normal;
+}
+
+/* ---- Progress Summary ---- */
+.progress-summary {
+  display: flex; align-items: center; gap: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.progress-ring-wrap { position: relative; flex-shrink: 0; }
+
+.progress-ring-bg {
+  fill: none; stroke: #e2e8f0; stroke-width: 9;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 9; stroke-linecap: round;
+  stroke-dasharray: 351.86;
+  stroke-dashoffset: 351.86;
+  transform: rotate(-90deg); transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1);
+  filter: drop-shadow(0 0 6px var(--primary-glow));
+}
+
+.progress-ring-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.progress-ring-text span {
+  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em;
+}
+.progress-ring-text small {
+  font-size: 0.68rem; color: var(--text-muted); font-weight: 500;
+}
+
+.progress-main { font-size: 1rem; font-weight: 600; }
+.progress-hint {
+  font-size: 0.8rem !important; color: var(--text-muted) !important;
+  font-weight: 400 !important; margin-top: 0.25rem;
+}
+
+/* Mood picker */
+.mood-picker {
+  display: flex; align-items: center; gap: 0.3rem;
+  margin-top: 0.85rem; flex-wrap: wrap;
+}
+.mood-label {
+  font-size: 0.75rem; color: var(--text-muted); margin-right: 0.25rem;
+}
+.mood-btn {
+  background: var(--border-light); border: 2px solid transparent;
+  border-radius: 50%; width: 34px; height: 34px;
+  font-size: 1.05rem; cursor: pointer;
+  transition: all var(--transition);
+  display: flex; align-items: center; justify-content: center;
+}
+.mood-btn:hover { transform: scale(1.15); background: #fff; }
+.mood-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+/* ---- Section Header ---- */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+.section-header h2 {
+  font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
+}
+.badge {
+  background: var(--border-light); color: var(--text-secondary);
+  font-size: 0.72rem; font-weight: 600;
+  padding: 0.25rem 0.65rem; border-radius: 999px;
+}
+
+/* ---- Habit List ---- */
+.habit-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.habit-item {
+  display: flex; align-items: center; gap: 0.9rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.95rem 1.1rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+
+.habit-item::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 4px; background: var(--habit-color, var(--primary));
+  opacity: 0; transition: opacity var(--transition);
+}
+
+.habit-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+.habit-item:hover::before { opacity: 1; }
+
+.habit-item.done {
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border-color: #86efac;
+}
+.habit-item.done::before { opacity: 1; }
+
+.habit-check {
+  width: 26px; height: 26px;
+  border: 2.5px solid var(--border);
+  border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  background: white;
+}
+.habit-item.done .habit-check {
+  background: var(--primary); border-color: var(--primary);
+  color: white; transform: scale(1.05);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+.habit-check svg { width: 13px; height: 13px; opacity: 0; transition: opacity 0.2s; }
+.habit-item.done .habit-check svg { opacity: 1; }
+
+.habit-icon { font-size: 1.4rem; flex-shrink: 0; }
+.habit-info { flex: 1; min-width: 0; }
+.habit-name { font-weight: 600; font-size: 0.92rem; }
+.habit-item.done .habit-name {
+  text-decoration: line-through; color: var(--text-secondary);
+}
+.habit-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+.habit-streak-mini {
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--warning); background: #fef3c7;
+  padding: 0.15rem 0.45rem; border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Celebrate banner */
+.celebrate-banner {
+  display: flex; align-items: center; gap: 1rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1px solid #fbbf24;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-top: 1.25rem;
+  animation: bounceIn 0.5s ease;
+}
+.celebrate-emoji { font-size: 2rem; }
+.celebrate-banner strong { font-size: 0.95rem; }
+.celebrate-banner p { font-size: 0.8rem; color: #92400e; margin-top: 0.15rem; }
+
+@keyframes bounceIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ---- Category chips ---- */
+.category-filter {
+  display: flex; gap: 0.4rem; flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.chip {
+  padding: 0.35rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: white; font-size: 0.78rem; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  transition: all var(--transition);
+}
+.chip:hover { border-color: var(--primary); color: var(--primary-dark); }
+.chip.active {
+  background: var(--primary); color: white; border-color: var(--primary);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+/* ---- Habit Manage ---- */
+.habit-manage-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.habit-manage-item {
+  display: flex; align-items: center; gap: 0.9rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.95rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.habit-manage-item:hover { box-shadow: var(--shadow); }
+.habit-manage-item .habit-icon { font-size: 1.5rem; }
+.habit-manage-item .habit-info { flex: 1; }
+.habit-manage-actions { display: flex; gap: 0.3rem; }
+
+.cat-tag {
+  display: inline-block;
+  font-size: 0.65rem; font-weight: 600;
+  padding: 0.1rem 0.4rem; border-radius: 4px;
+  background: var(--border-light); color: var(--text-muted);
+  text-transform: capitalize; margin-left: 0.3rem;
+}
+
+/* ---- Week ---- */
+.week-overview {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 0.45rem; margin-bottom: 1rem;
+}
+
+.week-day {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.3rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.week-day.today {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 2px 10px var(--primary-glow);
+}
+.week-day.complete {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-color: #34d399;
+}
+.week-day-name {
+  font-size: 0.65rem; color: var(--text-muted);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.week-day-date { font-size: 0.95rem; font-weight: 700; margin: 0.15rem 0; }
+.week-day-pct { font-size: 0.68rem; color: var(--text-secondary); font-weight: 500; }
+.week-day.complete .week-day-pct { color: var(--primary-dark); font-weight: 700; }
+
+.week-summary-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem; margin-bottom: 0.5rem;
+}
+.week-sum-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem; text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.week-sum-card .val { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+.week-sum-card .lbl { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+.week-detail-list { display: flex; flex-direction: column; gap: 0.7rem; }
+
+.week-detail-item {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+.week-detail-header {
+  display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem;
+}
+.week-detail-header .habit-icon { font-size: 1.2rem; }
+.week-detail-name { font-weight: 600; flex: 1; font-size: 0.9rem; }
+.week-detail-score { font-size: 0.78rem; color: var(--text-secondary); font-weight: 600; }
+
+.week-dots { display: flex; gap: 0.35rem; }
+.week-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--border-light); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; color: var(--text-muted); font-weight: 600;
+  transition: all var(--transition);
+}
+.week-dot.done {
+  background: var(--primary); border-color: var(--primary);
+  color: white; box-shadow: 0 2px 6px var(--primary-glow);
+}
+.week-dot.future { opacity: 0.35; }
+
+/* ---- Heatmap ---- */
+.heatmap-nav { display: flex; align-items: center; gap: 0.4rem; }
+.heatmap-wrap {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.heat-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: #e2e8f0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; color: transparent;
+  cursor: default; transition: all 0.15s;
+  position: relative;
+}
+.heat-cell:hover { transform: scale(1.15); z-index: 2; }
+.heat-cell.has-label { color: var(--text-muted); font-weight: 500; }
+.heat-cell.h0 { background: #e2e8f0; }
+.heat-cell.h1 { background: #bbf7d0; }
+.heat-cell.h2 { background: #86efac; }
+.heat-cell.h3 { background: #4ade80; }
+.heat-cell.h4 { background: #16a34a; color: white; }
+
+.heatmap-legend {
+  display: flex; align-items: center; gap: 0.3rem;
+  margin-top: 0.85rem; justify-content: flex-end;
+  font-size: 0.7rem; color: var(--text-muted);
+}
+.heat-box {
+  width: 14px; height: 14px; border-radius: 3px;
+}
+.heat-box.h0 { background: #e2e8f0; }
+.heat-box.h1 { background: #bbf7d0; }
+.heat-box.h2 { background: #86efac; }
+.heat-box.h3 { background: #4ade80; }
+.heat-box.h4 { background: #16a34a; }
+
+.heatmap-hint {
+  font-size: 0.78rem; color: var(--text-muted);
+  margin-top: 0.75rem; text-align: center;
+}
+
+/* ---- Stats ---- */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem; text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.stat-card.stat-fire {
+  background: linear-gradient(145deg, #fff7ed, #ffedd5);
+  border-color: #fdba74;
+}
+.stat-icon { font-size: 1.6rem; margin-bottom: 0.35rem; }
+.stat-value {
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
+}
+.stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 500; }
+
+.habit-stats-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.habit-stat-item {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+.habit-stat-header {
+  display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.55rem;
+}
+.habit-stat-name { font-weight: 600; flex: 1; font-size: 0.9rem; }
+.habit-stat-rate { font-size: 0.85rem; font-weight: 700; color: var(--primary-dark); }
+
+.progress-bar {
+  height: 7px; background: var(--border-light);
+  border-radius: 4px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--primary);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ---- Badges ---- */
+.badges-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem;
+}
+.badge-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.15rem 0.75rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  opacity: 0.45; filter: grayscale(0.8);
+}
+.badge-card.unlocked {
+  opacity: 1; filter: none;
+  border-color: #fbbf24;
+  background: linear-gradient(145deg, #fffbeb, #fef3c7);
+  box-shadow: 0 4px 14px rgba(251,191,36,0.2);
+}
+.badge-card.unlocked:hover { transform: translateY(-3px) scale(1.02); }
+.badge-emoji { font-size: 2rem; margin-bottom: 0.4rem; }
+.badge-name { font-size: 0.78rem; font-weight: 700; }
+.badge-desc { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.2rem; line-height: 1.35; }
+
+/* ---- Journal ---- */
+.journal-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.journal-card textarea {
+  width: 100%; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem; font-size: 0.9rem;
+  resize: vertical; outline: none;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; transition: border-color var(--transition);
+}
+.journal-card textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.journal-history { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.journal-entry {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+.journal-entry-date {
+  font-size: 0.75rem; font-weight: 600; color: var(--primary-dark);
+  margin-bottom: 0.35rem;
+}
+.journal-entry-text {
+  font-size: 0.85rem; color: var(--text-secondary);
+  white-space: pre-wrap; line-height: 1.55;
+}
+.journal-entry-mood { font-size: 1.1rem; float: right; }
+
+/* ---- Guide ---- */
+.guide-content h2 { font-size: 1.2rem; margin-bottom: 0.4rem; font-weight: 700; }
+.guide-intro {
+  color: var(--text-secondary); margin-bottom: 1.35rem; font-size: 0.92rem;
+}
+.guide-section {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem; margin-bottom: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+.guide-section h3 { font-size: 0.92rem; margin-bottom: 0.55rem; }
+.guide-section p, .guide-section ol, .guide-section ul, .guide-section li {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65;
+}
+.guide-section ol, .guide-section ul { padding-left: 1.2rem; }
+.guide-section li { margin-bottom: 0.3rem; }
+.guide-section code {
+  background: var(--border-light); padding: 0.1rem 0.35rem;
+  border-radius: 4px; font-size: 0.78rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.guide-tip {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  font-size: 0.875rem; color: var(--primary-dark); line-height: 1.6;
+  border: 1px solid #a7f3d0;
+}
+
+/* ---- Settings ---- */
+.settings-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem; margin-bottom: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+.settings-card h2 { font-size: 1rem; margin-bottom: 0.3rem; font-weight: 700; }
+.settings-desc {
+  font-size: 0.82rem; color: var(--text-secondary);
+  margin-bottom: 1.1rem; line-height: 1.55;
+}
+
+.pref-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--border-light);
+}
+.pref-row:last-child { border-bottom: none; }
+.pref-row strong { font-size: 0.88rem; }
+
+.toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; cursor: pointer;
+  background: var(--border); border-radius: 24px;
+  transition: 0.25s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute;
+  width: 18px; height: 18px; left: 3px; bottom: 3px;
+  background: white; border-radius: 50%;
+  transition: 0.25s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.toggle input:checked + .toggle-slider { background: var(--primary); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.connection-status {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-top: 1rem; font-size: 0.82rem; color: var(--text-secondary);
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+.status-dot.connected { background: var(--primary); box-shadow: 0 0 6px var(--primary-glow); }
+.status-dot.error { background: var(--danger); }
+
+/* ---- Forms ---- */
+.form-group { margin-bottom: 0.9rem; }
+.form-group label {
+  display: block; font-size: 0.78rem; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 0.3rem;
+}
+.form-group input, .form-group select {
+  width: 100%; padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.88rem; background: var(--bg); color: var(--text);
+  transition: border-color var(--transition); outline: none;
+}
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+.form-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.6rem 1.15rem; border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white; box-shadow: 0 2px 10px var(--primary-glow);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px); box-shadow: 0 4px 14px var(--primary-glow);
+}
+.btn-secondary { background: var(--border-light); color: var(--text); }
+.btn-secondary:hover { background: var(--border); }
+.btn-danger { background: var(--danger-light); color: var(--danger); }
+.btn-danger:hover { background: #fecaca; }
+.btn-sm { padding: 0.45rem 0.85rem; font-size: 0.8rem; }
+
+/* ---- Empty State ---- */
+.empty-state { text-align: center; padding: 3rem 1.5rem; }
+.empty-icon { font-size: 2.75rem; margin-bottom: 0.7rem; }
+.empty-state h3 { font-size: 1.05rem; margin-bottom: 0.3rem; font-weight: 700; }
+.empty-state p {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.15rem;
+}
+
+/* ---- Modal ---- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; opacity: 0; visibility: hidden;
+  transition: all var(--transition); padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+
+.modal {
+  background: var(--bg-card); border-radius: var(--radius);
+  width: 100%; max-width: 430px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.15rem 1.25rem; border-bottom: 1px solid var(--border);
+}
+.modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+.modal form { padding: 1.25rem; }
+
+
+
+/* ---- Confetti ---- */
+#confettiCanvas {
+  position: fixed; inset: 0; pointer-events: none; z-index: 250;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-close { display: flex; }
+  .sidebar-overlay.open { display: block; }
+  .main { margin-left: 0; }
+  .menu-toggle { display: flex; }
+  .content { padding: 1.15rem 1rem 2.5rem; }
+  .topbar { padding: 0.9rem 1rem; }
+  .progress-summary { flex-direction: column; text-align: center; gap: 1rem; }
+  .mood-picker { justify-content: center; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .week-overview { gap: 0.25rem; }
+  .week-day { padding: 0.5rem 0.15rem; }
+  .week-summary-cards { grid-template-columns: 1fr; }
+  .badges-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+  .quote-card { flex-direction: column; gap: 0.4rem; }
+}
+
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .badges-grid { grid-template-columns: 1fr 1fr; }
+  .week-dot { width: 26px; height: 26px; font-size: 0.55rem; }
+}
+
+/* ---- Charts ---- */
+.chart-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.15rem 1.35rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: -0.35rem 0 1rem;
+}
+
+.chart-period {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.chart-period .chip {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+}
+
+/* Bar chart daily */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 160px;
+  padding-top: 0.5rem;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.bar-fill-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+
+.bar-fill {
+  width: 70%;
+  max-width: 28px;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(180deg, #34d399, #10b981);
+  min-height: 3px;
+  transition: height 0.5s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.bar-fill.today {
+  background: linear-gradient(180deg, #a78bfa, #8b5cf6);
+  box-shadow: 0 0 10px rgba(139,92,246,0.35);
+}
+
+.bar-fill.zero {
+  background: #e2e8f0;
+  min-height: 3px;
+}
+
+.bar-value {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.bar-col:hover .bar-value {
+  opacity: 1;
+}
+
+.bar-label {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.bar-label.today-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.chart-avg {
+  margin-top: 0.85rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.chart-avg strong {
+  color: var(--primary-dark);
+}
+
+/* Compare chart (horizontal bars) */
+.compare-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.compare-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.compare-icon {
+  font-size: 1.1rem;
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.compare-name {
+  width: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.compare-bar-track {
+  flex: 1;
+  height: 18px;
+  background: var(--border-light);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.compare-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  min-width: 2px;
+}
+
+.compare-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Mood chart */
+.mood-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 80px;
+}
+
+.mood-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.mood-dot {
+  width: 100%;
+  max-width: 22px;
+  border-radius: 6px 6px 2px 2px;
+  transition: height 0.4s ease;
+  min-height: 4px;
+}
+
+.mood-col-label {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.mood-empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Insight cards */
+.insight-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.insight-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.insight-card .insight-title {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.insight-card .insight-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+}
+
+.insight-card .insight-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+@media (max-width: 500px) {
+  .bar-chart { height: 130px; gap: 2px; }
+  .bar-fill { width: 85%; max-width: 18px; }
+  .bar-label { font-size: 0.5rem; }
+  .compare-name { width: 70px; font-size: 0.7rem; }
+  .insight-row { grid-template-columns: 1fr; }
+}
+
+/* ---- Level card ---- */
+.level-card {
+  background: linear-gradient(145deg, #faf5ff, #f3e8ff);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid #e9d5ff;
+}
+.level-row { display: flex; justify-content: space-between; align-items: center; }
+.level-badge {
+  font-size: 0.8rem; font-weight: 800; color: #7c3aed;
+  background: #ede9fe; padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+.level-xp { font-size: 0.72rem; font-weight: 600; color: #6b21a8; }
+.level-bar {
+  height: 6px; background: #e9d5ff; border-radius: 3px;
+  margin-top: 0.45rem; overflow: hidden;
+}
+.level-bar-fill {
+  height: 100%; background: linear-gradient(90deg, #a78bfa, #7c3aed);
+  border-radius: 3px; transition: width 0.5s ease;
+}
+.level-next { font-size: 0.65rem; color: #7c3aed; margin-top: 0.3rem; opacity: 0.8; }
+
+/* ---- Today actions ---- */
+.today-actions {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1rem;
+}
+.rest-badge {
+  font-size: 0.75rem; font-weight: 600; color: #b45309;
+  background: #fef3c7; padding: 0.3rem 0.7rem; border-radius: 999px;
+}
+
+/* ---- Days picker ---- */
+.days-picker { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.day-chip {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid var(--border); background: white;
+  font-size: 0.72rem; font-weight: 600; color: var(--text-secondary);
+  cursor: pointer; transition: all var(--transition);
+}
+.day-chip.active {
+  background: var(--primary); color: white; border-color: var(--primary);
+}
+
+/* ---- Templates ---- */
+.template-card {
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 1rem; margin-bottom: 0.6rem; cursor: pointer;
+  transition: all var(--transition);
+}
+.template-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+.template-card h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+.template-card p { font-size: 0.78rem; color: var(--text-muted); }
+.template-habits { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.4rem; }
+
+/* ---- Week compare ---- */
+.week-compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.week-cmp-card {
+  background: var(--bg-card); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.9rem; text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.week-cmp-card .lbl { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+.week-cmp-card .val { font-size: 1.4rem; font-weight: 800; margin: 0.2rem 0; }
+.week-cmp-card .delta { font-size: 0.75rem; font-weight: 600; }
+.week-cmp-card .delta.up { color: var(--primary-dark); }
+.week-cmp-card .delta.down { color: var(--danger); }
+
+/* ---- Focus pick ---- */
+.focus-pick-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 0.75rem; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); margin-bottom: 0.4rem; cursor: pointer;
+}
+.focus-pick-item.selected {
+  border-color: var(--primary); background: var(--primary-light);
+}
+.focus-pick-item input { accent-color: var(--primary); }
+
+/* ---- Note on habit ---- */
+.habit-note {
+  font-size: 0.7rem; color: var(--text-muted); font-style: italic;
+  margin-top: 0.15rem;
+}
+
+/* ---- Reminder box ---- */
+.reminder-box {
+  margin-top: 1.5rem; background: var(--bg-card);
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.15rem; box-shadow: var(--shadow-sm);
+}
+.reminder-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.4rem 0; font-size: 0.85rem;
+}
+.reminder-time {
+  font-weight: 700; color: var(--primary-dark);
+  background: var(--primary-light); padding: 0.15rem 0.5rem;
+  border-radius: 6px; font-size: 0.78rem;
+}
+
+/* ---- Modal large ---- */
+.modal-lg { max-width: 480px; }
+
+/* ---- Sync time ---- */
+.sync-time {
+  font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;
+}
+
+/* ---- Archived dim ---- */
+.habit-manage-item.archived { opacity: 0.55; }
+.habit-manage-item.archived .habit-name::after {
+  content: ' (arsip)'; font-size: 0.7rem; color: var(--text-muted);
+}
+
+@media (max-width: 500px) {
+  .week-compare { grid-template-columns: 1fr; }
+}
+
+/* ---- Dark mode ---- */
+body.dark {
+  --bg: #0f172a;
+  --bg-soft: #1e293b;
+  --bg-card: #1e293b;
+  --bg-sidebar: #1e293b;
+  --border: #334155;
+  --border-light: #1e293b;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --primary-light: #064e3b;
+  --primary-glow: rgba(16, 185, 129, 0.3);
+  --danger-light: #7f1d1d;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow: 0 4px 16px rgba(0,0,0,0.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.45);
+}
+body.dark {
+  background: #0f172a;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(16,185,129,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(139,92,246,0.1) 0%, transparent 50%);
+}
+body.dark .topbar {
+  background: rgba(30, 41, 59, 0.9);
+}
+body.dark .quote-card {
+  background: linear-gradient(135deg, #2e1065, #1e1b4b);
+  border-color: #5b21b6;
+}
+body.dark .quote-text { color: #e9d5ff; }
+body.dark .quote-author { color: #c4b5fd; }
+body.dark .streak-card {
+  background: linear-gradient(145deg, #064e3b, #065f46);
+}
+body.dark .level-card {
+  background: linear-gradient(145deg, #2e1065, #1e1b4b);
+  border-color: #5b21b6;
+}
+body.dark .habit-item.done {
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border-color: #059669;
+}
+body.dark .nav-item.active {
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  color: #6ee7b7;
+}
+body.dark .chip.active { background: var(--primary); }
+body.dark .form-group input,
+body.dark .form-group select,
+body.dark .journal-card textarea {
+  background: #0f172a;
+  color: var(--text);
+  border-color: var(--border);
+}
+body.dark .modal { background: #1e293b; }
+body.dark .stat-card.stat-fire {
+  background: linear-gradient(145deg, #431407, #7c2d12);
+  border-color: #c2410c;
+}
+body.dark .badge-card.unlocked {
+  background: linear-gradient(145deg, #422006, #713f12);
+  border-color: #d97706;
+}
+body.dark .celebrate-banner {
+  background: linear-gradient(135deg, #422006, #713f12);
+  border-color: #d97706;
+}
+body.dark .celebrate-banner p { color: #fde68a; }
+
+/* ---- Undo bar ---- */
+.undo-bar {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: white;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 320;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.undo-bar .btn { color: var(--text); background: white; }
+
+/* ---- Weekly insight ---- */
+.weekly-insight {
+  margin-top: 1.25rem;
+  background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+  border: 1.5px solid #a7f3d0;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--primary-dark);
+  line-height: 1.55;
+  font-weight: 500;
+}
+body.dark .weekly-insight {
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border-color: #059669;
+  color: #a7f3d0;
+}
+
+/* ---- Onboarding ---- */
+.onboard-step h4 {
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+}
+.onboard-tpl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+.onboard-tpl button {
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: all var(--transition);
+}
+.onboard-tpl button:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+
+/* ---- Sync queue UI ---- */
+.refresh-wrap { position: relative; }
+.sync-badge {
+  position: absolute;
+  top: -2px; right: -2px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.queue-status {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+.queue-status.queue-pending { color: #d97706; }
+.queue-status.queue-offline { color: #64748b; }
+.queue-status.queue-flushing { color: #2563eb; }
+.queue-status.queue-ok { color: var(--primary-dark); }
+body.dark .queue-status.queue-ok { color: #6ee7b7; }
+body.dark .queue-status.queue-pending { color: #fbbf24; }
+
+
+/* ---- Toast notifications ---- */
+.toast-container {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+  max-width: min(420px, 92vw);
+  width: max-content;
+  min-width: 200px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: toastIn 0.28s cubic-bezier(0.4,0,0.2,1);
+  border: 1px solid transparent;
+  max-width: 100%;
+}
+
+.toast.hiding {
+  animation: toastOut 0.22s ease forwards;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-close {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0 0.15rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+.toast-close:hover { opacity: 1; }
+
+.toast-progress {
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 3px;
+  border-radius: 0 0 12px 12px;
+  width: 100%;
+  transform-origin: left;
+  animation: toastProgress linear forwards;
+  opacity: 0.45;
+}
+
+.toast { position: relative; overflow: hidden; }
+
+.toast-success { background: #065f46; border-color: #10b981; }
+.toast-success .toast-progress { background: #6ee7b7; }
+
+.toast-error { background: #7f1d1d; border-color: #ef4444; }
+.toast-error .toast-progress { background: #fca5a5; }
+
+.toast-warning { background: #78350f; border-color: #f59e0b; }
+.toast-warning .toast-progress { background: #fcd34d; }
+
+.toast-info { background: #1e3a5f; border-color: #3b82f6; }
+.toast-info .toast-progress { background: #93c5fd; }
+
+body.dark .toast-success { background: #064e3b; }
+body.dark .toast-error { background: #7f1d1d; }
+body.dark .toast-warning { background: #78350f; }
+body.dark .toast-info { background: #1e3a5f; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(8px) scale(0.96); }
+}
+@keyframes toastProgress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    left: 0.75rem;
+    right: 0.75rem;
+    transform: none;
+    width: auto;
+    max-width: none;
+  }
+}
+
+  </style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+  <meta name="theme-color" content="#10b981" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Ruang Tumbuh" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🌿</span>
+          <div class="logo-text-wrap">
+            <span class="logo-text">Ruang Tumbuh</span>
+            <span class="logo-tagline">tumbuh setiap hari</span>
+          </div>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Tutup sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="hari-ini"><span class="nav-icon">☀️</span><span>Hari Ini</span></button>
+        <button class="nav-item" data-page="kebiasaan"><span class="nav-icon">🌱</span><span>Kebiasaan</span></button>
+        <button class="nav-item" data-page="progres"><span class="nav-icon">📅</span><span>Progres Mingguan</span></button>
+        <button class="nav-item" data-page="heatmap"><span class="nav-icon">🟩</span><span>Kalender</span></button>
+        <button class="nav-item" data-page="statistik"><span class="nav-icon">📊</span><span>Statistik</span></button>
+        <button class="nav-item" data-page="pencapaian"><span class="nav-icon">🏆</span><span>Pencapaian</span></button>
+        <button class="nav-item" data-page="jurnal"><span class="nav-icon">📝</span><span>Jurnal Harian</span></button>
+        <div class="nav-divider"></div>
+        <button class="nav-item" data-page="panduan"><span class="nav-icon">💡</span><span>Panduan</span></button>
+        <button class="nav-item" data-page="pengaturan"><span class="nav-icon">⚙️</span><span>Pengaturan</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="level-card" id="levelCard">
+          <div class="level-row">
+            <span class="level-badge" id="levelBadge">Lv.1</span>
+            <span class="level-xp" id="levelXp">0 XP</span>
+          </div>
+          <div class="level-bar"><div class="level-bar-fill" id="levelBarFill" style="width:0%"></div></div>
+          <div class="level-next" id="levelNext">100 XP ke level berikutnya</div>
+        </div>
+        <div class="streak-card" id="streakCard">
+          <div class="streak-fire">🔥</div>
+          <div class="streak-value" id="streakValue">0</div>
+          <div class="streak-label">hari beruntun</div>
+          <div class="streak-sub" id="streakSub">Mulai hari ini!</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <div class="topbar-title">
+          <h1 id="pageTitle">Hari Ini</h1>
+          <p class="topbar-date" id="currentDate"></p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn-icon" id="themeToggle" title="Mode gelap/terang" aria-label="Tema">🌙</button>
+          <button class="btn-icon" id="shareBtn" title="Bagikan progres" aria-label="Bagikan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+          </button>
+          <button class="btn-icon refresh-wrap" id="refreshBtn" title="Muat ulang / sync" aria-label="Sync">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            <span class="sync-badge" id="syncBadge" style="display:none;">0</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- HARI INI -->
+        <section class="page active" id="page-hari-ini">
+          <div class="quote-card" id="quoteCard">
+            <div class="quote-icon">💬</div>
+            <div>
+              <p class="quote-text" id="quoteText"></p>
+              <p class="quote-author" id="quoteAuthor"></p>
+            </div>
+          </div>
+
+          <div class="today-actions">
+            <button class="btn btn-sm" id="btnRestDay" title="Tandai hari istirahat">🏖️ Hari Istirahat</button>
+            <button class="btn btn-sm btn-secondary" id="btnFocusPick">⭐ Atur Fokus</button>
+            <span class="rest-badge" id="restBadge" style="display:none;">Mode istirahat aktif</span>
+          </div>
+
+          <div class="progress-summary">
+            <div class="progress-ring-wrap">
+              <svg class="progress-ring" width="130" height="130">
+                <circle class="progress-ring-bg" cx="65" cy="65" r="56" />
+                <circle class="progress-ring-fill" id="progressRing" cx="65" cy="65" r="56" />
+              </svg>
+              <div class="progress-ring-text">
+                <span id="progressPercent">0%</span>
+                <small>selesai</small>
+              </div>
+            </div>
+            <div class="progress-info">
+              <p class="progress-main" id="progressText">0 dari 0 kebiasaan selesai</p>
+              <p class="progress-hint" id="progressHint">Mari mulai hari ini dengan langkah kecil 🌱</p>
+              <div class="mood-picker" id="moodPicker">
+                <span class="mood-label">Mood:</span>
+                <button class="mood-btn" data-mood="1" title="Buruk">😢</button>
+                <button class="mood-btn" data-mood="2" title="Kurang">😕</button>
+                <button class="mood-btn" data-mood="3" title="Biasa">😐</button>
+                <button class="mood-btn" data-mood="4" title="Baik">🙂</button>
+                <button class="mood-btn" data-mood="5" title="Hebat">😄</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="focusSection" style="display:none;">
+            <div class="section-header"><h2>⭐ Fokus Hari Ini</h2></div>
+            <div class="habit-list" id="focusHabitList"></div>
+          </div>
+
+          <div class="section-header">
+            <h2>Checklist Harian</h2>
+            <span class="badge" id="todayCount">0</span>
+          </div>
+          <div class="habit-list" id="todayHabitList"></div>
+          <div class="empty-state" id="todayEmpty" style="display:none;">
+            <div class="empty-icon">🌱</div>
+            <h3>Belum ada kebiasaan</h3>
+            <p>Tambahkan kebiasaan atau pakai template siap pakai.</p>
+            <button class="btn btn-primary" data-goto="kebiasaan">Tambah Kebiasaan</button>
+          </div>
+
+          <div class="celebrate-banner" id="celebrateBanner" style="display:none;">
+            <div class="celebrate-emoji">🎉</div>
+            <div>
+              <strong>Semua selesai!</strong>
+              <p>Hari ini kamu luar biasa. Istirahat dan rayakan 💚</p>
+            </div>
+          </div>
+
+          <div class="reminder-box" id="reminderBox" style="display:none;">
+            <div class="section-header"><h2>⏰ Pengingat Hari Ini</h2></div>
+            <div id="reminderList"></div>
+          </div>
+        </section>
+
+        <!-- KEBIASAAN -->
+        <section class="page" id="page-kebiasaan">
+          <div class="section-header">
+            <h2>Daftar Kebiasaan</h2>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" id="btnTemplates">📦 Template</button>
+              <button class="btn btn-primary btn-sm" id="btnAddHabit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                Tambah
+              </button>
+            </div>
+          </div>
+          <div class="category-filter" id="categoryFilter">
+            <button class="chip active" data-cat="semua">Semua</button>
+            <button class="chip" data-cat="kesehatan">Kesehatan</button>
+            <button class="chip" data-cat="produktivitas">Produktivitas</button>
+            <button class="chip" data-cat="mindfulness">Mindfulness</button>
+            <button class="chip" data-cat="lainnya">Lainnya</button>
+            <button class="chip" data-cat="arsip">Arsip</button>
+          </div>
+          <div class="habit-manage-list" id="habitManageList"></div>
+          <div class="empty-state" id="habitsEmpty" style="display:none;">
+            <div class="empty-icon">✨</div>
+            <h3>Mulai bangun kebiasaan</h3>
+            <p>Tambah manual atau pilih template siap pakai.</p>
+            <button class="btn btn-primary" id="btnAddHabitEmpty">Tambah</button>
+            <button class="btn btn-secondary" id="btnTemplatesEmpty">📦 Template</button>
+          </div>
+        </section>
+
+        <!-- PROGRES -->
+        <section class="page" id="page-progres">
+          <div class="section-header">
+            <h2>Progres Minggu Ini</h2>
+            <span class="badge" id="weekRange"></span>
+          </div>
+          <div class="week-compare" id="weekCompare"></div>
+          <div class="week-overview" id="weekOverview"></div>
+          <div class="week-summary-cards" id="weekSummaryCards"></div>
+          <div class="section-header" style="margin-top:1.75rem;"><h2>Detail per Kebiasaan</h2></div>
+          <div class="week-detail-list" id="weekDetailList"></div>
+        </section>
+
+        <!-- HEATMAP -->
+        <section class="page" id="page-heatmap">
+          <div class="section-header">
+            <h2>Kalender Konsistensi</h2>
+            <div class="heatmap-nav">
+              <button class="btn-icon" id="heatPrev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <span class="badge" id="heatMonth"></span>
+              <button class="btn-icon" id="heatNext"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+          </div>
+          <div class="heatmap-wrap">
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+            <div class="heatmap-legend">
+              <span>Kurang</span>
+              <span class="heat-box h0"></span><span class="heat-box h1"></span><span class="heat-box h2"></span><span class="heat-box h3"></span><span class="heat-box h4"></span>
+              <span>Banyak</span>
+            </div>
+          </div>
+          <p class="heatmap-hint">Hijau = banyak selesai. 🏖️ = hari istirahat.</p>
+        </section>
+
+        <!-- STATISTIK -->
+        <section class="page" id="page-statistik">
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card stat-fire"><div class="stat-icon">🔥</div><div class="stat-value" id="statStreak">0</div><div class="stat-label">Streak Terpanjang</div></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statTotalDone">0</div><div class="stat-label">Total Selesai</div></div>
+            <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="statRate">0%</div><div class="stat-label">Konsistensi 30 Hari</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" id="statXp">0</div><div class="stat-label">Total XP</div></div>
+          </div>
+          <div class="chart-card" style="margin-top:1.5rem;">
+            <div class="section-header">
+              <h2>Diagram Harian</h2>
+              <div class="chart-period">
+                <button class="chip chart-period-btn active" data-period="7">7 hari</button>
+                <button class="chip chart-period-btn" data-period="14">14 hari</button>
+                <button class="chip chart-period-btn" data-period="30">30 hari</button>
+              </div>
+            </div>
+            <p class="chart-subtitle" id="chartSubtitle">Persentase selesai per hari</p>
+            <div class="bar-chart" id="dailyBarChart"></div>
+            <div class="chart-avg" id="chartAvg"></div>
+          </div>
+          <div class="chart-card" style="margin-top:1.25rem;">
+            <div class="section-header"><h2>Perbandingan Kebiasaan</h2></div>
+            <p class="chart-subtitle">Total selesai 30 hari terakhir</p>
+            <div class="compare-chart" id="compareChart"></div>
+          </div>
+          <div class="chart-card" style="margin-top:1.25rem;">
+            <div class="section-header"><h2>Tren Mood</h2></div>
+            <p class="chart-subtitle">14 hari terakhir</p>
+            <div class="mood-chart" id="moodChart"></div>
+          </div>
+          <div class="insight-row" id="insightRow">
+            <div class="insight-card"><div class="insight-title">Hari Terbaik</div><div class="insight-val" id="insightBestDay">–</div><div class="insight-sub" id="insightBestSub">rata-rata tertinggi</div></div>
+            <div class="insight-card"><div class="insight-title">Kebiasaan Teratas</div><div class="insight-val" id="insightTopHabit">–</div><div class="insight-sub" id="insightTopSub">paling konsisten</div></div>
+          </div>
+          <div class="weekly-insight" id="weeklyInsight"></div>
+          <div class="section-header" style="margin-top:1.75rem;"><h2>Performa per Kebiasaan</h2></div>
+          <div class="habit-stats-list" id="habitStatsList"></div>
+        </section>
+
+        <!-- PENCAPAIAN -->
+        <section class="page" id="page-pencapaian">
+          <div class="section-header"><h2>Lencana & Pencapaian</h2><span class="badge" id="badgeCount">0/12</span></div>
+          <p class="page-desc">Raih lencana dengan konsistensi. Setiap langkah kecil dihitung!</p>
+          <div class="badges-grid" id="badgesGrid"></div>
+        </section>
+
+        <!-- JURNAL -->
+        <section class="page" id="page-jurnal">
+          <div class="section-header"><h2>Jurnal Harian</h2><span class="badge" id="journalDate"></span></div>
+          <p class="page-desc">Refleksi singkat hari ini.</p>
+          <div class="journal-card">
+            <textarea id="journalText" rows="6" placeholder="Hari ini aku merasa...&#10;&#10;Hal baik:&#10;&#10;Yang ingin diperbaiki:"></textarea>
+            <div class="form-actions" style="margin-top:0.75rem;">
+              <button class="btn btn-primary" id="btnSaveJournal">Simpan Jurnal</button>
+            </div>
+          </div>
+          <div class="section-header" style="margin-top:1.75rem;"><h2>Riwayat Jurnal</h2></div>
+          <div class="journal-history" id="journalHistory"></div>
+        </section>
+
+        <!-- PANDUAN -->
+        <section class="page" id="page-panduan">
+          <div class="guide-content">
+            <h2>Panduan Penggunaan</h2>
+            <p class="guide-intro">Ruang Tumbuh v1.6 — habit tracker lengkap (PWA, dark mode, import, undo, antrean sync offline), reminder, target fleksibel, hari istirahat, fokus, arsip, template, dan berbagi progres.</p>
+            <div class="guide-section">
+              <h3>Fitur utama</h3>
+              <ul>
+                <li><strong>Hari Istirahat</strong> — streak tidak putus saat libur/sakit</li>
+                <li><strong>Fokus</strong> — prioritaskan 1–3 kebiasaan hari ini</li>
+                <li><strong>Catatan</strong> — tulis catatan saat mencentang</li>
+                <li><strong>Target fleksibel</strong> — harian, X×/minggu, atau hari tertentu</li>
+                <li><strong>Pengingat</strong> — set jam reminder per kebiasaan</li>
+                <li><strong>XP & Level</strong> — naik level dari konsistensi</li>
+                <li><strong>Bagikan</strong> — kartu progres siap di-share</li>
+                <li><strong>Template</strong> — paket kebiasaan siap pakai</li>
+                <li><strong>Arsip</strong> — simpan kebiasaan lama tanpa menghapus</li>
+              </ul>
+            </div>
+            <div class="guide-section">
+              <h3>Setup Google Sheets</h3>
+              <ol>
+                <li>Buat Spreadsheet → sheet Kebiasaan & Log</li>
+                <li>Tempel <code>Code.gs</code> di Apps Script → Deploy Web App</li>
+                <li>Salin URL ke Pengaturan</li>
+              </ol>
+            </div>
+            <div class="guide-tip"><strong>💡 Tips:</strong> Mulai 2–3 kebiasaan. Gunakan hari istirahat saat perlu. Rayakan naik level!</div>
+          </div>
+        </section>
+
+        <!-- PENGATURAN -->
+        <section class="page" id="page-pengaturan">
+          <div class="settings-card">
+            <h2>Integrasi Google Apps Script</h2>
+            <p class="settings-desc">URL Web App untuk sync ke Google Sheets.</p>
+            <div class="form-group"><label for="gasUrl">URL Web App</label><input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" /></div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="btnSaveGas">Simpan URL</button>
+              <button class="btn btn-secondary" id="btnTestGas">Uji Koneksi</button>
+              <button class="btn btn-secondary" id="btnForceSync">Paksa Sync</button>
+            </div>
+            <div class="connection-status" id="connectionStatus">
+              <span class="status-dot"></span>
+              <span class="status-text">Belum terhubung (mode lokal)</span>
+            </div>
+            <p class="sync-time" id="syncTime"></p>
+            <p class="queue-status" id="queueStatus"></p>
+            <p class="settings-desc" style="margin-top:0.75rem;margin-bottom:0;">
+              Perubahan saat offline disimpan ke antrean, lalu dikirim otomatis saat online kembali.
+            </p>
+          </div>
+          <div class="settings-card">
+            <h2>Notifikasi</h2>
+            <p class="settings-desc">Izinkan notifikasi browser untuk pengingat kebiasaan.</p>
+            <button class="btn btn-secondary" id="btnNotifPerm">Aktifkan Notifikasi</button>
+            <p class="settings-desc" id="notifStatus" style="margin-top:0.5rem;margin-bottom:0;"></p>
+          </div>
+          <div class="settings-card">
+            <h2>Preferensi</h2>
+            <div class="pref-row"><div><strong>Animasi confetti</strong></div><label class="toggle"><input type="checkbox" id="prefConfetti" checked /><span class="toggle-slider"></span></label></div>
+            <div class="pref-row"><div><strong>Kutipan motivasi</strong></div><label class="toggle"><input type="checkbox" id="prefQuote" checked /><span class="toggle-slider"></span></label></div>
+            <div class="pref-row"><div><strong>Mode gelap</strong></div><label class="toggle"><input type="checkbox" id="prefDark" /><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="settings-card">
+            <h2>Data</h2>
+            <p class="settings-desc">Ekspor untuk backup, impor untuk memulihkan.</p>
+            <div class="form-actions">
+              <button class="btn btn-secondary" id="btnExportData">Ekspor JSON</button>
+              <button class="btn btn-secondary" id="btnExportCsv">Ekspor CSV</button>
+              <label class="btn btn-secondary" style="cursor:pointer;">
+                Impor JSON
+                <input type="file" id="btnImportData" accept="application/json,.json" hidden />
+              </label>
+              <button class="btn btn-danger" id="btnClearData">Hapus Data Lokal</button>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h2>Install Aplikasi (PWA)</h2>
+            <p class="settings-desc">Install ke layar utama HP/desktop agar bisa dibuka seperti aplikasi, termasuk offline.</p>
+            <button class="btn btn-primary" id="btnInstallPwa" style="display:none;">Install Ruang Tumbuh</button>
+            <p class="settings-desc" id="pwaStatus" style="margin-bottom:0;">Buka dari server lokal/HTTPS agar opsi install muncul.</p>
+          </div>
+          <div class="settings-card">
+            <h2>Tentang</h2>
+            <p class="settings-desc">Ruang Tumbuh v1.6 — habit tracker lengkap berbahasa Indonesia. Datamu tetap milikmu.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Habit -->
+  <div class="modal-overlay" id="habitModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 id="modalTitle">Tambah Kebiasaan</h3>
+        <button class="btn-icon modal-close" id="modalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <form id="habitForm">
+        <input type="hidden" id="habitId" />
+        <div class="form-group"><label for="habitName">Nama</label><input type="text" id="habitName" required maxlength="60" placeholder="Contoh: Baca 20 halaman" /></div>
+        <div class="form-row">
+          <div class="form-group"><label for="habitIcon">Ikon</label>
+            <select id="habitIcon">
+              <option value="📚">📚 Baca</option><option value="🏃">🏃 Olahraga</option><option value="💧">💧 Minum Air</option>
+              <option value="🧘">🧘 Meditasi</option><option value="✍️">✍️ Jurnal</option><option value="🥗">🥗 Makan Sehat</option>
+              <option value="😴">😴 Tidur</option><option value="🎯">🎯 Fokus</option><option value="💪">💪 Latihan</option>
+              <option value="🧹">🧹 Bersih</option><option value="🚶">🚶 Jalan</option><option value="📵">📵 Detox</option>
+              <option value="🙏">🙏 Syukur</option><option value="🌱">🌱 Custom</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="habitColor">Warna</label>
+            <select id="habitColor">
+              <option value="#10b981">Hijau</option><option value="#3b82f6">Biru</option><option value="#8b5cf6">Ungu</option>
+              <option value="#f59e0b">Kuning</option><option value="#ef4444">Merah</option><option value="#ec4899">Pink</option>
+              <option value="#06b6d4">Cyan</option><option value="#64748b">Abu</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="habitCategory">Kategori</label>
+            <select id="habitCategory">
+              <option value="kesehatan">Kesehatan</option><option value="produktivitas">Produktivitas</option>
+              <option value="mindfulness">Mindfulness</option><option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="habitFreq">Jenis target</label>
+            <select id="habitFreq">
+              <option value="daily">Setiap hari</option>
+              <option value="weekly">X kali / minggu</option>
+              <option value="custom_days">Hari tertentu</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" id="targetRow">
+          <div class="form-group"><label for="habitTarget">Target / minggu</label><input type="number" id="habitTarget" min="1" max="7" value="7" /></div>
+          <div class="form-group"><label for="habitReminder">Pengingat (jam)</label><input type="time" id="habitReminder" /></div>
+        </div>
+        <div class="form-group" id="daysRow" style="display:none;">
+          <label>Hari aktif</label>
+          <div class="days-picker" id="daysPicker">
+            <button type="button" class="day-chip" data-day="1">Sen</button>
+            <button type="button" class="day-chip" data-day="2">Sel</button>
+            <button type="button" class="day-chip" data-day="3">Rab</button>
+            <button type="button" class="day-chip" data-day="4">Kam</button>
+            <button type="button" class="day-chip" data-day="5">Jum</button>
+            <button type="button" class="day-chip" data-day="6">Sab</button>
+            <button type="button" class="day-chip" data-day="0">Min</button>
+          </div>
+        </div>
+        <div class="form-group"><label for="habitSkip">Boleh skip / minggu</label><input type="number" id="habitSkip" min="0" max="3" value="0" /></div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="modalCancel">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Note -->
+  <div class="modal-overlay" id="noteModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Catatan (opsional)</h3><button class="btn-icon" id="noteModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <div style="padding:1.25rem;">
+        <p class="settings-desc" id="noteHabitName"></p>
+        <div class="form-group"><input type="text" id="noteInput" maxlength="120" placeholder="Contoh: lari 3 km, fokus bagus..." /></div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" id="noteSkip">Lewati</button>
+          <button class="btn btn-primary" id="noteSave">Simpan & Centang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Templates -->
+  <div class="modal-overlay" id="templateModal">
+    <div class="modal modal-lg">
+      <div class="modal-header"><h3>📦 Template Kebiasaan</h3><button class="btn-icon" id="templateClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <div class="template-list" id="templateList" style="padding:1rem;"></div>
+    </div>
+  </div>
+
+  <!-- Modal Focus -->
+  <div class="modal-overlay" id="focusModal">
+    <div class="modal">
+      <div class="modal-header"><h3>⭐ Fokus Hari Ini</h3><button class="btn-icon" id="focusClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <div style="padding:1.25rem;">
+        <p class="settings-desc">Pilih maksimal 3 kebiasaan prioritas hari ini.</p>
+        <div id="focusPickList"></div>
+        <div class="form-actions" style="margin-top:1rem;">
+          <button class="btn btn-primary" id="focusSave">Simpan Fokus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share card canvas (hidden) -->
+  <canvas id="shareCanvas" width="600" height="400" style="display:none;"></canvas>
+
+  <!-- Onboarding -->
+  <div class="modal-overlay" id="onboardModal">
+    <div class="modal modal-lg">
+      <div class="modal-header"><h3>🌿 Selamat datang di Ruang Tumbuh</h3></div>
+      <div style="padding:1.25rem;">
+        <p class="settings-desc">Tiga langkah cepat untuk mulai tumbuh hari ini.</p>
+        <div class="onboard-steps" id="onboardSteps">
+          <div class="onboard-step active" data-step="1">
+            <h4>1. Pilih template (opsional)</h4>
+            <p class="settings-desc">Atau lewati dan tambah sendiri nanti.</p>
+            <div id="onboardTemplates"></div>
+            <button class="btn btn-secondary btn-sm" id="onboardSkipTpl">Lewati</button>
+          </div>
+          <div class="onboard-step" data-step="2" style="display:none;">
+            <h4>2. Izinkan pengingat?</h4>
+            <p class="settings-desc">Supaya tidak lupa checklist harian.</p>
+            <button class="btn btn-primary btn-sm" id="onboardNotif">Aktifkan Notifikasi</button>
+            <button class="btn btn-secondary btn-sm" id="onboardSkipNotif">Nanti saja</button>
+          </div>
+          <div class="onboard-step" data-step="3" style="display:none;">
+            <h4>3. Siap dimulai!</h4>
+            <p class="settings-desc">Centang kebiasaan pertamamu di halaman Hari Ini. Setiap centang = +10 XP.</p>
+            <button class="btn btn-primary" id="onboardDone">Mulai Tumbuh 🌱</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Undo bar -->
+  <div class="undo-bar" id="undoBar" style="display:none;">
+    <span id="undoText">Dibatalkan</span>
+    <button class="btn btn-sm btn-secondary" id="undoBtn">Undo</button>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+/**
+ * Ruang Tumbuh v1.6 — Full feature habit tracker
+ */
+(function () {
+  'use strict';
+
+  const XP_PER_CHECK = 10;
+  const XP_LEVELS = [0, 100, 250, 500, 900, 1500, 2300, 3400, 4800, 6500, 8500];
+
+  const state = {
+    habits: [],
+    logs: [],
+    journals: [],
+    moods: {},
+    restDays: [],
+    focusIds: [],
+    xp: 0,
+    gasUrl: localStorage.getItem('rt_gas_url') || '',
+    lastSync: localStorage.getItem('rt_last_sync') || '',
+    syncQueue: JSON.parse(localStorage.getItem('rt_sync_queue') || '[]'),
+    isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+    isFlushingQueue: false,
+    editingId: null,
+    currentPage: 'hari-ini',
+    categoryFilter: 'semua',
+    heatMonth: new Date(),
+    chartPeriod: 7,
+    prefConfetti: localStorage.getItem('rt_pref_confetti') !== '0',
+    prefQuote: localStorage.getItem('rt_pref_quote') !== '0',
+    prefDark: localStorage.getItem('rt_pref_dark') === '1',
+    pendingNoteHabit: null,
+    selectedDays: [],
+    undoStack: null,
+    undoTimer: null,
+    snoozedReminders: JSON.parse(localStorage.getItem('rt_snooze') || '{}'),
+    onboarded: localStorage.getItem('rt_onboarded') === '1',
+    deferredInstallPrompt: null,
+  };
+
+  const QUOTES = [
+    { text: 'Konsistensi kecil setiap hari mengalahkan usaha besar sesekali.', author: '— James Clear' },
+    { text: 'Kamu tidak harus sempurna. Kamu hanya harus mulai.', author: '— Anonim' },
+    { text: 'Progres, bukan kesempurnaan.', author: '— Anonim' },
+    { text: 'Satu langkah kecil hari ini adalah fondasi besok.', author: '— Anonim' },
+    { text: 'Tumbuh itu pelan, tapi pasti — selama kamu tidak berhenti.', author: '— Ruang Tumbuh' },
+    { text: 'Rayakan setiap centang. Itu bukti kamu memilih dirimu.', author: '— Ruang Tumbuh' },
+    { text: 'Hari terbaik untuk memulai adalah hari ini.', author: '— Anonim' },
+    { text: 'Istirahat juga bagian dari tumbuh.', author: '— Ruang Tumbuh' },
+  ];
+
+  const TEMPLATES = [
+    {
+      id: 'pagi', name: 'Rutin Pagi', desc: 'Mulai hari dengan tenang',
+      habits: [
+        { nama: 'Bangun sebelum 6:30', ikon: '😴', warna: '#8b5cf6', kategori: 'mindfulness', target_mingguan: 5 },
+        { nama: 'Minum air 1 gelas', ikon: '💧', warna: '#3b82f6', kategori: 'kesehatan', target_mingguan: 7 },
+        { nama: 'Stretching 5 menit', ikon: '🧘', warna: '#10b981', kategori: 'kesehatan', target_mingguan: 5 },
+      ],
+    },
+    {
+      id: 'sehat', name: 'Kesehatan', desc: 'Tubuh lebih bugar',
+      habits: [
+        { nama: 'Olahraga 20 menit', ikon: '🏃', warna: '#10b981', kategori: 'kesehatan', target_mingguan: 4 },
+        { nama: 'Minum 8 gelas air', ikon: '💧', warna: '#3b82f6', kategori: 'kesehatan', target_mingguan: 7 },
+        { nama: 'Makan sayur/buah', ikon: '🥗', warna: '#22c55e', kategori: 'kesehatan', target_mingguan: 6 },
+        { nama: 'Tidur sebelum 23:00', ikon: '😴', warna: '#8b5cf6', kategori: 'kesehatan', target_mingguan: 5 },
+      ],
+    },
+    {
+      id: 'fokus', name: 'Fokus Kerja/Kuliah', desc: 'Produktivitas stabil',
+      habits: [
+        { nama: 'Deep work 45 menit', ikon: '🎯', warna: '#f59e0b', kategori: 'produktivitas', target_mingguan: 5 },
+        { nama: 'Baca 20 menit', ikon: '📚', warna: '#8b5cf6', kategori: 'produktivitas', target_mingguan: 5 },
+        { nama: 'Tanpa medsos 1 jam', ikon: '📵', warna: '#64748b', kategori: 'produktivitas', target_mingguan: 5 },
+      ],
+    },
+    {
+      id: 'mind', name: 'Mindfulness', desc: 'Tenang & bersyukur',
+      habits: [
+        { nama: 'Meditasi 5 menit', ikon: '🧘', warna: '#ec4899', kategori: 'mindfulness', target_mingguan: 7 },
+        { nama: 'Jurnal syukur 3 hal', ikon: '🙏', warna: '#f59e0b', kategori: 'mindfulness', target_mingguan: 7 },
+        { nama: 'Jalan kaki sore', ikon: '🚶', warna: '#10b981', kategori: 'kesehatan', target_mingguan: 4 },
+      ],
+    },
+  ];
+
+  const BADGES = [
+    { id: 'first', emoji: '🌱', name: 'Benih Pertama', desc: 'Selesaikan 1 kebiasaan', check: (s) => s.totalDone >= 1 },
+    { id: 'streak3', emoji: '🔥', name: 'Api Kecil', desc: 'Streak 3 hari', check: (s) => s.longest >= 3 },
+    { id: 'streak7', emoji: '⚡', name: 'Seminggu Solid', desc: 'Streak 7 hari', check: (s) => s.longest >= 7 },
+    { id: 'streak14', emoji: '💎', name: 'Dua Minggu', desc: 'Streak 14 hari', check: (s) => s.longest >= 14 },
+    { id: 'streak30', emoji: '👑', name: 'Satu Bulan', desc: 'Streak 30 hari', check: (s) => s.longest >= 30 },
+    { id: 'total10', emoji: '✨', name: 'Sepuluh Langkah', desc: 'Total 10 selesai', check: (s) => s.totalDone >= 10 },
+    { id: 'total50', emoji: '🌟', name: 'Lima Puluh', desc: 'Total 50 selesai', check: (s) => s.totalDone >= 50 },
+    { id: 'total100', emoji: '🏆', name: 'Seratus', desc: 'Total 100 selesai', check: (s) => s.totalDone >= 100 },
+    { id: 'habits3', emoji: '🎯', name: 'Trio', desc: 'Punya 3+ kebiasaan', check: (s) => s.habitCount >= 3 },
+    { id: 'perfect1', emoji: '💚', name: 'Hari Sempurna', desc: 'Selesaikan semua di 1 hari', check: (s) => s.perfectDays >= 1 },
+    { id: 'journal3', emoji: '📝', name: 'Penulis', desc: 'Tulis 3 jurnal', check: (s) => s.journalCount >= 3 },
+    { id: 'level5', emoji: '🚀', name: 'Level 5', desc: 'Capai level 5', check: (s) => s.level >= 5 },
+  ];
+
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+
+  function todayStr() { return formatDate(new Date()); }
+  function formatDate(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function parseDate(str) {
+    const [y,m,d] = str.split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
+  function getMonday(d) {
+    const date = new Date(d);
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    date.setDate(date.getDate() + diff);
+    date.setHours(0,0,0,0);
+    return date;
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  const TOAST_ICONS = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠',
+    info: 'ℹ',
+  };
+
+  let toastIdSeq = 0;
+
+  /**
+   * Tampilkan notifikasi toast.
+   * @param {string} msg - pesan
+   * @param {object|string} [opts] - 'success'|'error'|'warning'|'info' atau { type, duration, closable }
+   */
+  function toast(msg, opts) {
+    if (typeof opts === 'string') opts = { type: opts };
+    opts = opts || {};
+    const type = opts.type || inferToastType(msg);
+    const duration = opts.duration != null ? opts.duration : (type === 'error' ? 4200 : 3000);
+    const closable = opts.closable !== false;
+
+    const container = $('#toastContainer');
+    if (!container) return;
+
+    // Batasi max 4 toast
+    while (container.children.length >= 4) {
+      const oldest = container.lastElementChild;
+      if (oldest) oldest.remove();
+    }
+
+    const id = 'toast-' + (++toastIdSeq);
+    const el = document.createElement('div');
+    el.className = 'toast toast-' + type;
+    el.id = id;
+    el.setAttribute('role', 'status');
+    el.innerHTML =
+      '<span class="toast-icon">' + (TOAST_ICONS[type] || 'ℹ') + '</span>' +
+      '<span class="toast-body"></span>' +
+      (closable ? '<button type="button" class="toast-close" aria-label="Tutup">×</button>' : '') +
+      '<span class="toast-progress" style="animation-duration:' + duration + 'ms"></span>';
+    el.querySelector('.toast-body').textContent = msg;
+
+    const remove = () => {
+      if (!el.parentNode) return;
+      el.classList.add('hiding');
+      setTimeout(() => el.remove(), 220);
+    };
+
+    if (closable) {
+      el.querySelector('.toast-close').addEventListener('click', remove);
+    }
+
+    container.prepend(el);
+    const timer = setTimeout(remove, duration);
+    el.addEventListener('mouseenter', () => clearTimeout(timer), { once: true });
+  }
+
+  function inferToastType(msg) {
+    const m = String(msg || '').toLowerCase();
+    if (/gagal|error|tidak valid|ditolak|hapus permanen/.test(m)) return 'error';
+    if (/offline|antrean|nanti|lewati|batalkan|diingatkan/.test(m)) return 'warning';
+    if (/berhasil|tersimpan|terhubung|selesai|ditambahkan|diunduh|diimpor|undo|aktif|selamat|sempurna|terkirim|diperbarui|dipulihkan|diarsipkan/.test(m)) return 'success';
+    if (/✓|🎉|💚|🌱|⭐|📸/.test(String(msg || ''))) return 'success';
+    return 'info';
+  }
+
+  function toastSuccess(msg, duration) { toast(msg, { type: 'success', duration }); }
+  function toastError(msg, duration) { toast(msg, { type: 'error', duration }); }
+  function toastWarning(msg, duration) { toast(msg, { type: 'warning', duration }); }
+  function toastInfo(msg, duration) { toast(msg, { type: 'info', duration }); }
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  function applyTheme() {
+    document.body.classList.toggle('dark', state.prefDark);
+    const btn = $('#themeToggle');
+    if (btn) btn.textContent = state.prefDark ? '☀️' : '🌙';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.content = state.prefDark ? '#0f172a' : '#10b981';
+  }
+
+  function showUndo(message, undoFn) {
+    if (state.undoTimer) clearTimeout(state.undoTimer);
+    state.undoStack = undoFn;
+    const bar = $('#undoBar');
+    $('#undoText').textContent = message;
+    bar.style.display = 'flex';
+    state.undoTimer = setTimeout(() => {
+      bar.style.display = 'none';
+      state.undoStack = null;
+    }, 5000);
+  }
+
+  function getWeeklyInsightText() {
+    const habits = activeHabits();
+    if (!habits.length) return 'Tambahkan kebiasaan pertamamu untuk mulai melihat pola.';
+    const thisPct = weekCompletionPct(0);
+    const lastPct = weekCompletionPct(1);
+    const streak = calcStreak();
+    const dayNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    // best day
+    const byDow = [0,0,0,0,0,0,0], cnt = [0,0,0,0,0,0,0];
+    for (let i = 0; i < 28; i++) {
+      const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0,0,0,0);
+      const ds = formatDate(d);
+      if (isRestDay(ds)) continue;
+      const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+      if (!scheduled.length) continue;
+      const done = scheduled.filter((h) => isDoneOn(h.id, ds)).length;
+      byDow[d.getDay()] += (done / scheduled.length) * 100;
+      cnt[d.getDay()]++;
+    }
+    let best = 0, bestA = -1;
+    for (let i = 0; i < 7; i++) {
+      const a = cnt[i] ? byDow[i] / cnt[i] : 0;
+      if (a > bestA) { bestA = a; best = i; }
+    }
+    if (thisPct > lastPct + 5) {
+      return `💡 Minggu ini lebih baik (+${thisPct - lastPct}%). Pertahankan ritme di ${dayNames[best]} — hari terkuatmu.`;
+    }
+    if (thisPct < lastPct - 5) {
+      return `💡 Minggu ini sedikit turun. Coba fokus ke 1–2 kebiasaan saja, terutama di ${dayNames[best]}.`;
+    }
+    if (streak >= 7) {
+      return `💡 Streak ${streak} hari — luar biasa. Jaga dengan hari istirahat saat perlu, bukan menyerah.`;
+    }
+    if (bestA >= 0) {
+      return `💡 Kamu paling konsisten di hari ${dayNames[best]}. Jadwalkan kebiasaan sulit di hari itu.`;
+    }
+    return `💡 Mulai dari yang kecil. Satu centang hari ini lebih berharga daripada rencana sempurna.`;
+  }
+
+  function renderWeeklyInsight() {
+    const el = $('#weeklyInsight');
+    if (el) el.textContent = getWeeklyInsightText();
+  }
+
+  // ---- Level / XP ----
+  function getLevel(xp) {
+    let lv = 1;
+    for (let i = 1; i < XP_LEVELS.length; i++) {
+      if (xp >= XP_LEVELS[i]) lv = i + 1;
+      else break;
+    }
+    return lv;
+  }
+  function xpProgress(xp) {
+    const lv = getLevel(xp);
+    const cur = XP_LEVELS[lv - 1] || 0;
+    const next = XP_LEVELS[lv] || (cur + 2000);
+    const pct = Math.min(100, Math.round(((xp - cur) / (next - cur)) * 100));
+    return { lv, cur, next, pct, need: next - xp };
+  }
+  function addXp(amount) {
+    state.xp += amount;
+    saveLocal();
+    renderLevel();
+  }
+  function renderLevel() {
+    const { lv, pct, need } = xpProgress(state.xp);
+    $('#levelBadge').textContent = 'Lv.' + lv;
+    $('#levelXp').textContent = state.xp + ' XP';
+    $('#levelBarFill').style.width = pct + '%';
+    $('#levelNext').textContent = need + ' XP ke level berikutnya';
+  }
+
+  // ---- Storage ----
+  function loadLocal() {
+    try {
+      state.habits = JSON.parse(localStorage.getItem('rt_habits') || '[]');
+      state.logs = JSON.parse(localStorage.getItem('rt_logs') || '[]');
+      state.journals = JSON.parse(localStorage.getItem('rt_journals') || '[]');
+      state.moods = JSON.parse(localStorage.getItem('rt_moods') || '{}');
+      state.restDays = JSON.parse(localStorage.getItem('rt_rest') || '[]');
+      state.focusIds = JSON.parse(localStorage.getItem('rt_focus') || '[]');
+      state.xp = Number(localStorage.getItem('rt_xp') || 0);
+    } catch {
+      state.habits = []; state.logs = []; state.journals = [];
+      state.moods = {}; state.restDays = []; state.focusIds = []; state.xp = 0;
+    }
+  }
+  function saveLocal() {
+    localStorage.setItem('rt_habits', JSON.stringify(state.habits));
+    localStorage.setItem('rt_logs', JSON.stringify(state.logs));
+    localStorage.setItem('rt_journals', JSON.stringify(state.journals));
+    localStorage.setItem('rt_moods', JSON.stringify(state.moods));
+    localStorage.setItem('rt_rest', JSON.stringify(state.restDays));
+    localStorage.setItem('rt_focus', JSON.stringify(state.focusIds));
+    localStorage.setItem('rt_xp', String(state.xp));
+  }
+
+  // ---- GAS ----
+  function saveSyncQueue() {
+    localStorage.setItem('rt_sync_queue', JSON.stringify(state.syncQueue));
+    updateQueueUI();
+  }
+
+  function enqueueSync(action, payload) {
+    if (!state.gasUrl) return;
+    // Deduplicate: for saveHabit/saveLog keep only latest per entity
+    if (action === 'saveHabit' && payload.habit && payload.habit.id) {
+      state.syncQueue = state.syncQueue.filter(
+        (q) => !(q.action === 'saveHabit' && q.payload.habit && q.payload.habit.id === payload.habit.id)
+      );
+    }
+    if (action === 'saveLog' && payload.log) {
+      const hid = payload.log.habit_id;
+      const tgl = payload.log.tanggal;
+      state.syncQueue = state.syncQueue.filter(
+        (q) => !(q.action === 'saveLog' && q.payload.log &&
+          q.payload.log.habit_id === hid && q.payload.log.tanggal === tgl)
+      );
+    }
+    if (action === 'deleteHabit' && payload.id) {
+      // Remove pending saves for this habit; keep the delete
+      state.syncQueue = state.syncQueue.filter(
+        (q) => !(q.action === 'saveHabit' && q.payload.habit && q.payload.habit.id === payload.id) &&
+               !(q.action === 'saveLog' && q.payload.log && q.payload.log.habit_id === payload.id)
+      );
+    }
+    state.syncQueue.push({
+      id: uid(),
+      action,
+      payload,
+      createdAt: new Date().toISOString(),
+      attempts: 0,
+    });
+    saveSyncQueue();
+  }
+
+  async function gasRequest(action, payload = {}) {
+    if (!state.gasUrl) return null;
+    if (!navigator.onLine) return null;
+    try {
+      const res = await fetch(state.gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action, ...payload }),
+        redirect: 'follow',
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      return data;
+    } catch (e) {
+      console.warn('GAS failed', e);
+      return null;
+    }
+  }
+
+  async function flushSyncQueue() {
+    if (!state.gasUrl || !navigator.onLine || state.isFlushingQueue) return { ok: 0, fail: 0 };
+    if (!state.syncQueue.length) return { ok: 0, fail: 0 };
+
+    state.isFlushingQueue = true;
+    updateQueueUI();
+    let ok = 0, fail = 0;
+    const remaining = [];
+
+    for (const item of state.syncQueue) {
+      const result = await gasRequest(item.action, item.payload);
+      if (result) {
+        ok++;
+      } else {
+        item.attempts = (item.attempts || 0) + 1;
+        if (item.attempts < 5) remaining.push(item);
+        else fail++;
+      }
+    }
+
+    state.syncQueue = remaining;
+    saveSyncQueue();
+    state.isFlushingQueue = false;
+
+    if (ok > 0) {
+      state.lastSync = new Date().toISOString();
+      localStorage.setItem('rt_last_sync', state.lastSync);
+    }
+    updateQueueUI();
+    updateSyncTime();
+    return { ok, fail };
+  }
+
+  async function syncFromGas() {
+    if (!state.gasUrl) { loadLocal(); return false; }
+
+    // First push local offline changes
+    await flushSyncQueue();
+
+    if (!navigator.onLine) {
+      loadLocal();
+      return false;
+    }
+
+    const data = await gasRequest('getAll');
+    if (data && data.habits) {
+      state.habits = data.habits;
+      state.logs = data.logs || [];
+      if (data.journals) state.journals = data.journals;
+      state.lastSync = new Date().toISOString();
+      localStorage.setItem('rt_last_sync', state.lastSync);
+      saveLocal();
+      updateQueueUI();
+      return true;
+    }
+    loadLocal();
+    return false;
+  }
+
+  async function pushHabit(h) {
+    saveLocal();
+    if (!state.gasUrl) return;
+    if (navigator.onLine) {
+      const result = await gasRequest('saveHabit', { habit: h });
+      if (result) {
+        state.lastSync = new Date().toISOString();
+        localStorage.setItem('rt_last_sync', state.lastSync);
+        updateSyncTime();
+        return;
+      }
+    }
+    enqueueSync('saveHabit', { habit: h });
+  }
+
+  async function pushLog(l) {
+    saveLocal();
+    if (!state.gasUrl) return;
+    if (navigator.onLine) {
+      const result = await gasRequest('saveLog', { log: l });
+      if (result) {
+        state.lastSync = new Date().toISOString();
+        localStorage.setItem('rt_last_sync', state.lastSync);
+        updateSyncTime();
+        return;
+      }
+    }
+    enqueueSync('saveLog', { log: l });
+  }
+
+  async function deleteHabitRemote(id) {
+    saveLocal();
+    if (!state.gasUrl) return;
+    if (navigator.onLine) {
+      const result = await gasRequest('deleteHabit', { id });
+      if (result) {
+        state.lastSync = new Date().toISOString();
+        localStorage.setItem('rt_last_sync', state.lastSync);
+        updateSyncTime();
+        return;
+      }
+    }
+    enqueueSync('deleteHabit', { id });
+  }
+
+  function updateQueueUI() {
+    const el = $('#queueStatus');
+    if (!el) return;
+    const n = state.syncQueue.length;
+    const online = navigator.onLine;
+    if (!state.gasUrl) {
+      el.textContent = '';
+      el.className = 'queue-status';
+      return;
+    }
+    if (state.isFlushingQueue) {
+      el.textContent = '⏳ Mengirim antrean sync...';
+      el.className = 'queue-status queue-flushing';
+    } else if (n > 0) {
+      el.textContent = online
+        ? `📤 ${n} perubahan menunggu sync`
+        : `📴 Offline — ${n} perubahan diantrekan`;
+      el.className = 'queue-status queue-pending';
+    } else if (!online) {
+      el.textContent = '📴 Offline — perubahan akan diantrekan';
+      el.className = 'queue-status queue-offline';
+    } else {
+      el.textContent = '✓ Antrean sync kosong';
+      el.className = 'queue-status queue-ok';
+    }
+
+    // Badge on refresh button
+    const badge = $('#syncBadge');
+    if (badge) {
+      if (n > 0) {
+        badge.textContent = String(n);
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  }
+
+  // ---- Helpers ----
+  function activeHabits() {
+    return state.habits.filter((h) => h.aktif !== false && !h.archived);
+  }
+  function isRestDay(dateStr) {
+    return state.restDays.includes(dateStr || todayStr());
+  }
+  function isScheduledToday(h, dateStr) {
+    const d = dateStr ? parseDate(dateStr) : new Date();
+    const dow = d.getDay();
+    if (h.freq === 'custom_days' && h.days && h.days.length) {
+      return h.days.map(Number).includes(dow);
+    }
+    return true; // daily or weekly quota — show every day
+  }
+  function isDoneOn(habitId, dateStr) {
+    return state.logs.some((l) => l.habit_id === habitId && l.tanggal === dateStr && l.selesai);
+  }
+  function isDoneToday(habitId) { return isDoneOn(habitId, todayStr()); }
+  function getLog(habitId, dateStr) {
+    return state.logs.find((l) => l.habit_id === habitId && l.tanggal === dateStr);
+  }
+
+  function toggleLog(habitId, note, opts) {
+    opts = opts || {};
+    const t = todayStr();
+    const existing = getLog(habitId, t);
+    const snapshot = existing ? { ...existing } : null;
+    const hadLog = !!existing;
+    let gainedXp = false;
+
+    if (existing) {
+      const wasDone = existing.selesai;
+      existing.selesai = !existing.selesai;
+      if (note !== undefined) existing.note = note;
+      if (existing.selesai && !wasDone) { addXp(XP_PER_CHECK); gainedXp = true; }
+      pushLog(existing);
+    } else {
+      const log = { id: uid(), habit_id: habitId, tanggal: t, selesai: true, note: note || '' };
+      state.logs.push(log);
+      addXp(XP_PER_CHECK);
+      gainedXp = true;
+      pushLog(log);
+    }
+    saveLocal();
+
+    if (!opts.silent) {
+      const h = state.habits.find((x) => x.id === habitId);
+      const name = h ? h.nama : 'Kebiasaan';
+      const nowDone = isDoneToday(habitId);
+      showUndo(nowDone ? `✓ ${name}` : `Dibatalkan: ${name}`, () => {
+        // restore
+        if (!hadLog) {
+          state.logs = state.logs.filter((l) => !(l.habit_id === habitId && l.tanggal === t));
+          if (gainedXp) { state.xp = Math.max(0, state.xp - XP_PER_CHECK); }
+        } else {
+          const cur = getLog(habitId, t);
+          if (cur && snapshot) {
+            cur.selesai = snapshot.selesai;
+            cur.note = snapshot.note || '';
+            if (gainedXp && !snapshot.selesai) state.xp = Math.max(0, state.xp - XP_PER_CHECK);
+          }
+        }
+        saveLocal();
+        renderToday(); renderStreak(); renderStats(); renderLevel();
+        toast('Undo berhasil');
+      });
+    }
+  }
+
+  function calcStreak() {
+    const habits = activeHabits();
+    if (!habits.length) return 0;
+    let streak = 0;
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    for (let i = 0; i < 365; i++) {
+      const ds = formatDate(d);
+      if (isRestDay(ds)) {
+        // rest day doesn't break or count
+        d.setDate(d.getDate() - 1);
+        continue;
+      }
+      const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+      if (!scheduled.length) {
+        d.setDate(d.getDate() - 1);
+        continue;
+      }
+      const allDone = scheduled.every((h) => isDoneOn(h.id, ds));
+      if (allDone) streak++;
+      else if (i > 0) break;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function calcLongestStreak() {
+    const habits = activeHabits();
+    if (!habits.length) return 0;
+    let longest = 0, current = 0;
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    // go back 365 days and walk forward conceptually via reverse
+    const dates = [];
+    for (let i = 364; i >= 0; i--) {
+      const dd = new Date(d);
+      dd.setDate(d.getDate() - i);
+      dates.push(formatDate(dd));
+    }
+    for (const ds of dates) {
+      if (isRestDay(ds)) continue;
+      const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+      if (!scheduled.length) continue;
+      if (scheduled.every((h) => isDoneOn(h.id, ds))) {
+        current++;
+        longest = Math.max(longest, current);
+      } else {
+        current = 0;
+      }
+    }
+    return longest;
+  }
+
+  function countPerfectDays() {
+    const habits = activeHabits();
+    if (!habits.length) return 0;
+    const byDate = {};
+    state.logs.filter((l) => l.selesai).forEach((l) => {
+      byDate[l.tanggal] = byDate[l.tanggal] || new Set();
+      byDate[l.tanggal].add(l.habit_id);
+    });
+    let c = 0;
+    for (const [ds, ids] of Object.entries(byDate)) {
+      if (isRestDay(ds)) continue;
+      const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+      if (scheduled.length && scheduled.every((h) => ids.has(h.id))) c++;
+    }
+    return c;
+  }
+
+  function weekDates(offsetWeeks) {
+    const monday = getMonday(new Date());
+    monday.setDate(monday.getDate() - (offsetWeeks || 0) * 7);
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      dates.push(d);
+    }
+    return dates;
+  }
+
+  function weekCompletionPct(offsetWeeks) {
+    const habits = activeHabits();
+    if (!habits.length) return 0;
+    const dates = weekDates(offsetWeeks);
+    const today = new Date(); today.setHours(0,0,0,0);
+    let done = 0, possible = 0;
+    dates.forEach((d) => {
+      if (d > today) return;
+      const ds = formatDate(d);
+      if (isRestDay(ds)) return;
+      const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+      possible += scheduled.length;
+      done += scheduled.filter((h) => isDoneOn(h.id, ds)).length;
+    });
+    return possible ? Math.round((done / possible) * 100) : 0;
+  }
+
+  function habitStreak(habitId) {
+    let streak = 0;
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    for (let i = 0; i < 365; i++) {
+      const ds = formatDate(d);
+      if (isRestDay(ds)) { d.setDate(d.getDate() - 1); continue; }
+      if (isDoneOn(habitId, ds)) streak++;
+      else if (i > 0) break;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  // ---- Confetti ----
+  function fireConfetti() {
+    if (!state.prefConfetti) return;
+    const canvas = $('#confettiCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const colors = ['#10b981','#34d399','#fbbf24','#f472b6','#60a5fa','#a78bfa'];
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * -0.4,
+      w: 5 + Math.random() * 6, h: 3 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 4, vy: 2 + Math.random() * 4,
+      rot: Math.random() * 360, vr: (Math.random() - 0.5) * 10,
+    }));
+    let frame = 0;
+    function anim() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.08;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      if (++frame < 120) requestAnimationFrame(anim);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    anim();
+  }
+
+  // ---- Reminders ----
+  function checkReminders() {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const now = new Date();
+    const hhmm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    const today = todayStr();
+    activeHabits().forEach((h) => {
+      if (!h.reminder || h.reminder !== hhmm) return;
+      if (isDoneToday(h.id)) return;
+      if (!isScheduledToday(h)) return;
+      // snooze check
+      const sk = h.id + '_' + today + '_' + hhmm;
+      if (state.snoozedReminders[sk] && Date.now() < state.snoozedReminders[sk]) return;
+      try {
+        const n = new Notification('Ruang Tumbuh', {
+          body: `Waktunya: ${h.ikon || ''} ${h.nama} — klik untuk buka`,
+          tag: sk,
+        });
+        n.onclick = () => { window.focus(); n.close(); };
+      } catch (_) {}
+    });
+  }
+
+  function snoozeReminder(habitId, minutes) {
+    const now = new Date();
+    const hhmm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    const sk = habitId + '_' + todayStr() + '_' + hhmm;
+    state.snoozedReminders[sk] = Date.now() + minutes * 60000;
+    localStorage.setItem('rt_snooze', JSON.stringify(state.snoozedReminders));
+    toast(`Diingatkan lagi dalam ${minutes} menit`);
+  }
+
+  // ---- Render ----
+  function renderQuote() {
+    const card = $('#quoteCard');
+    if (!state.prefQuote) { card.style.display = 'none'; return; }
+    card.style.display = 'flex';
+    const q = QUOTES[Math.floor(Date.now() / 86400000) % QUOTES.length];
+    $('#quoteText').textContent = '"' + q.text + '"';
+    $('#quoteAuthor').textContent = q.author;
+  }
+
+  function renderRestBadge() {
+    const rest = isRestDay();
+    $('#restBadge').style.display = rest ? 'inline-flex' : 'none';
+    $('#btnRestDay').textContent = rest ? '✅ Batalkan Istirahat' : '🏖️ Hari Istirahat';
+  }
+
+  function renderToday() {
+    renderRestBadge();
+    const habits = activeHabits().filter((h) => isScheduledToday(h));
+    const list = $('#todayHabitList');
+    const empty = $('#todayEmpty');
+    $('#todayCount').textContent = habits.length;
+
+    // Focus section
+    const focusHabits = habits.filter((h) => state.focusIds.includes(h.id));
+    const focusSec = $('#focusSection');
+    const focusList = $('#focusHabitList');
+    if (focusHabits.length) {
+      focusSec.style.display = 'block';
+      focusList.innerHTML = focusHabits.map((h) => habitItemHtml(h)).join('');
+      bindHabitClicks(focusList);
+    } else {
+      focusSec.style.display = 'none';
+    }
+
+    if (!habits.length) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      updateProgressRing(0, 0);
+      $('#celebrateBanner').style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+
+    // Non-focus habits
+    const others = habits.filter((h) => !state.focusIds.includes(h.id));
+    list.innerHTML = others.map((h) => habitItemHtml(h)).join('');
+    bindHabitClicks(list);
+
+    const doneCount = habits.filter((h) => isDoneToday(h.id)).length;
+    updateProgressRing(doneCount, habits.length);
+    $('#celebrateBanner').style.display = doneCount === habits.length && habits.length ? 'flex' : 'none';
+
+    // Mood
+    const todayMood = state.moods[todayStr()];
+    $$('.mood-btn').forEach((btn) => {
+      btn.classList.toggle('active', Number(btn.dataset.mood) === todayMood);
+    });
+
+    // Reminders list
+    const withRem = habits.filter((h) => h.reminder);
+    const rbox = $('#reminderBox');
+    if (withRem.length) {
+      rbox.style.display = 'block';
+      $('#reminderList').innerHTML = withRem.map((h) =>
+        `<div class="reminder-item"><span class="reminder-time">${h.reminder}</span> ${h.ikon || ''} ${escapeHtml(h.nama)}</div>`
+      ).join('');
+    } else {
+      rbox.style.display = 'none';
+    }
+  }
+
+  function habitItemHtml(h) {
+    const done = isDoneToday(h.id);
+    const hs = habitStreak(h.id);
+    const log = getLog(h.id, todayStr());
+    const note = log && log.note ? `<div class="habit-note">📝 ${escapeHtml(log.note)}</div>` : '';
+    const freqLabel = h.freq === 'weekly' ? `Target ${h.target_mingguan || 7}x/minggu`
+      : h.freq === 'custom_days' ? 'Hari tertentu'
+      : 'Setiap hari';
+    return `
+      <div class="habit-item ${done ? 'done' : ''}" data-id="${h.id}" style="--habit-color:${h.warna || '#10b981'}">
+        <div class="habit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+        <span class="habit-icon">${h.ikon || '🌱'}</span>
+        <div class="habit-info">
+          <div class="habit-name">${escapeHtml(h.nama)}</div>
+          <div class="habit-meta">${freqLabel}</div>
+          ${note}
+        </div>
+        ${hs >= 2 ? `<span class="habit-streak-mini">🔥 ${hs}</span>` : ''}
+      </div>`;
+  }
+
+  function bindHabitClicks(container) {
+    container.querySelectorAll('.habit-item').forEach((el) => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.id;
+        if (isDoneToday(id)) {
+          toggleLog(id);
+          afterToggle();
+        } else {
+          // ask for note
+          state.pendingNoteHabit = id;
+          const h = state.habits.find((x) => x.id === id);
+          $('#noteHabitName').textContent = (h && h.nama) || '';
+          $('#noteInput').value = '';
+          $('#noteModal').classList.add('open');
+          setTimeout(() => $('#noteInput').focus(), 100);
+        }
+      });
+    });
+  }
+
+  function afterToggle() {
+    renderToday();
+    renderStreak();
+    renderStats();
+    renderLevel();
+    const habits = activeHabits().filter((h) => isScheduledToday(h));
+    const nowDone = habits.filter((h) => isDoneToday(h.id)).length;
+    if (nowDone === habits.length && habits.length > 0) {
+      fireConfetti();
+      toast('🎉 Semua selesai! +XP');
+    }
+  }
+
+  function updateProgressRing(done, total) {
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    const circ = 2 * Math.PI * 56;
+    $('#progressRing').style.strokeDashoffset = circ - (pct / 100) * circ;
+    $('#progressPercent').textContent = pct + '%';
+    $('#progressText').textContent = `${done} dari ${total} kebiasaan selesai`;
+    const hints = ['Mari mulai hari ini 🌱', 'Sudah ada progres! 💪', 'Setengah jalan! ✨', 'Hampir selesai! 🔥', 'Sempurna! 💚'];
+    let hi = 0;
+    if (pct >= 100) hi = 4; else if (pct >= 75) hi = 3; else if (pct >= 50) hi = 2; else if (pct > 0) hi = 1;
+    $('#progressHint').textContent = isRestDay() ? 'Mode istirahat — streak aman 🏖️' : hints[hi];
+  }
+
+  function renderHabits() {
+    let habits = state.habits;
+    if (state.categoryFilter === 'arsip') {
+      habits = habits.filter((h) => h.archived);
+    } else {
+      habits = habits.filter((h) => !h.archived);
+      if (state.categoryFilter !== 'semua') {
+        habits = habits.filter((h) => (h.kategori || 'lainnya') === state.categoryFilter);
+      }
+    }
+    const list = $('#habitManageList');
+    const empty = $('#habitsEmpty');
+    if (!habits.length) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    list.innerHTML = habits.map((h) => `
+      <div class="habit-manage-item ${h.archived ? 'archived' : ''}" data-id="${h.id}">
+        <span class="habit-icon">${h.ikon || '🌱'}</span>
+        <div class="habit-info">
+          <div class="habit-name">${escapeHtml(h.nama)}<span class="cat-tag">${h.kategori || 'lainnya'}</span></div>
+          <div class="habit-meta">${h.freq === 'weekly' ? h.target_mingguan + 'x/minggu' : h.freq === 'custom_days' ? 'Hari tertentu' : 'Harian'}${h.reminder ? ' · ⏰ ' + h.reminder : ''}</div>
+        </div>
+        <div class="habit-manage-actions">
+          <button class="btn-icon btn-edit" title="Edit" data-id="${h.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn-icon btn-archive" title="${h.archived ? 'Pulihkan' : 'Arsip'}" data-id="${h.id}">${h.archived ? '♻️' : '📦'}</button>
+          <button class="btn-icon btn-delete" title="Hapus" data-id="${h.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+        </div>
+      </div>`).join('');
+
+    list.querySelectorAll('.btn-edit').forEach((btn) => {
+      btn.addEventListener('click', (e) => { e.stopPropagation(); openModal(btn.dataset.id); });
+    });
+    list.querySelectorAll('.btn-archive').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const h = state.habits.find((x) => x.id === btn.dataset.id);
+        if (!h) return;
+        h.archived = !h.archived;
+        pushHabit(h);
+        renderHabits(); renderToday();
+        toast(h.archived ? 'Diarsipkan' : 'Dipulihkan');
+      });
+    });
+    list.querySelectorAll('.btn-delete').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('Hapus permanen?')) return;
+        const id = btn.dataset.id;
+        state.habits = state.habits.filter((h) => h.id !== id);
+        state.logs = state.logs.filter((l) => l.habit_id !== id);
+        await deleteHabitRemote(id);
+        renderHabits(); renderToday(); renderStreak();
+        toast('Dihapus');
+      });
+    });
+  }
+
+  function renderWeek() {
+    const dates = weekDates(0);
+    const habits = activeHabits();
+    const dayNames = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+    const today = todayStr();
+    const start = dates[0], end = dates[6];
+    $('#weekRange').textContent = `${start.getDate()}/${start.getMonth()+1} – ${end.getDate()}/${end.getMonth()+1}`;
+
+    // Week comparison
+    const thisPct = weekCompletionPct(0);
+    const lastPct = weekCompletionPct(1);
+    const delta = thisPct - lastPct;
+    $('#weekCompare').innerHTML = `
+      <div class="week-cmp-card">
+        <div class="lbl">Minggu ini</div>
+        <div class="val">${thisPct}%</div>
+        <div class="delta ${delta >= 0 ? 'up' : 'down'}">${delta >= 0 ? '▲' : '▼'} ${Math.abs(delta)}% vs minggu lalu</div>
+      </div>
+      <div class="week-cmp-card">
+        <div class="lbl">Minggu lalu</div>
+        <div class="val">${lastPct}%</div>
+        <div class="delta">${lastPct >= 70 ? 'Bagus 💪' : lastPct >= 40 ? 'Cukup baik' : 'Bisa lebih baik'}</div>
+      </div>`;
+
+    let weekDone = 0, weekPossible = 0, perfectDays = 0;
+    $('#weekOverview').innerHTML = dates.map((d, i) => {
+      const ds = formatDate(d);
+      const isToday = ds === today;
+      const isFuture = d > new Date() && !isToday;
+      const rest = isRestDay(ds);
+      let pct = 0, done = 0;
+      if (habits.length && !isFuture && !rest) {
+        const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+        done = scheduled.filter((h) => isDoneOn(h.id, ds)).length;
+        pct = scheduled.length ? Math.round((done / scheduled.length) * 100) : 0;
+        weekDone += done;
+        weekPossible += scheduled.length;
+        if (scheduled.length && done === scheduled.length) perfectDays++;
+      }
+      return `<div class="week-day ${isToday ? 'today' : ''} ${pct === 100 ? 'complete' : ''}">
+        <div class="week-day-name">${dayNames[i]}</div>
+        <div class="week-day-date">${rest ? '🏖️' : d.getDate()}</div>
+        <div class="week-day-pct">${isFuture || rest ? (rest ? 'istirahat' : '–') : pct + '%'}</div>
+      </div>`;
+    }).join('');
+
+    const weekPct = weekPossible ? Math.round((weekDone / weekPossible) * 100) : 0;
+    $('#weekSummaryCards').innerHTML = `
+      <div class="week-sum-card"><div class="val">${weekPct}%</div><div class="lbl">Konsistensi</div></div>
+      <div class="week-sum-card"><div class="val">${weekDone}</div><div class="lbl">Total Selesai</div></div>
+      <div class="week-sum-card"><div class="val">${perfectDays}</div><div class="lbl">Hari Sempurna</div></div>`;
+
+    const detail = $('#weekDetailList');
+    if (!habits.length) {
+      detail.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><h3>Belum ada data</h3></div>';
+      return;
+    }
+    detail.innerHTML = habits.map((h) => {
+      let doneCount = 0;
+      const dots = dates.map((d) => {
+        const ds = formatDate(d);
+        const isFuture = d > new Date() && ds !== today;
+        const done = isDoneOn(h.id, ds);
+        if (done) doneCount++;
+        return `<div class="week-dot ${done ? 'done' : ''} ${isFuture ? 'future' : ''}">${d.getDate()}</div>`;
+      }).join('');
+      return `<div class="week-detail-item">
+        <div class="week-detail-header">
+          <span class="habit-icon">${h.ikon || '🌱'}</span>
+          <span class="week-detail-name">${escapeHtml(h.nama)}</span>
+          <span class="week-detail-score">${doneCount}/${h.target_mingguan || 7}</span>
+        </div>
+        <div class="week-dots">${dots}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderHeatmap() {
+    const year = state.heatMonth.getFullYear();
+    const month = state.heatMonth.getMonth();
+    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $('#heatMonth').textContent = `${monthNames[month]} ${year}`;
+    const firstDay = new Date(year, month, 1);
+    let startDow = firstDay.getDay();
+    startDow = startDow === 0 ? 6 : startDow - 1;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const habits = activeHabits();
+    const totalH = habits.length || 1;
+    const dayLabels = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+    let html = dayLabels.map((d) => `<div class="heat-cell has-label" style="background:transparent;aspect-ratio:auto;font-size:0.65rem;">${d}</div>`).join('');
+    for (let i = 0; i < startDow; i++) html += `<div class="heat-cell" style="background:transparent;"></div>`;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      if (isRestDay(ds)) {
+        html += `<div class="heat-cell has-label" style="background:#fef3c7;" title="${ds} istirahat">🏖️</div>`;
+        continue;
+      }
+      const done = habits.filter((h) => isDoneOn(h.id, ds)).length;
+      const ratio = done / totalH;
+      let cls = 'h0';
+      if (ratio >= 1) cls = 'h4'; else if (ratio >= 0.75) cls = 'h3'; else if (ratio >= 0.5) cls = 'h2'; else if (ratio > 0) cls = 'h1';
+      const isToday = ds === todayStr();
+      html += `<div class="heat-cell ${cls} has-label" title="${ds}: ${done}/${habits.length}" style="${isToday ? 'outline:2px solid #10b981;outline-offset:1px;' : ''}">${day}</div>`;
+    }
+    $('#heatmapGrid').innerHTML = html;
+  }
+
+  function renderStats() {
+    const habits = activeHabits();
+    const totalDone = state.logs.filter((l) => l.selesai).length;
+    const longest = calcLongestStreak();
+    const thirtyAgo = new Date();
+    thirtyAgo.setDate(thirtyAgo.getDate() - 30);
+    const recentLogs = state.logs.filter((l) => l.selesai && parseDate(l.tanggal) >= thirtyAgo);
+    const possible = habits.length * 30;
+    const rate = possible ? Math.round((recentLogs.length / possible) * 100) : 0;
+
+    $('#statStreak').textContent = longest;
+    $('#statTotalDone').textContent = totalDone;
+    $('#statRate').textContent = rate + '%';
+    $('#statXp').textContent = state.xp;
+
+    renderDailyChart();
+    renderCompareChart();
+    renderMoodChart();
+    renderInsights();
+    renderWeeklyInsight();
+
+    const list = $('#habitStatsList');
+    if (!habits.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📈</div><h3>Belum ada statistik</h3></div>';
+      return;
+    }
+    list.innerHTML = habits.map((h) => {
+      const hRecent = state.logs.filter((l) => l.habit_id === h.id && l.selesai && parseDate(l.tanggal) >= thirtyAgo).length;
+      const hRate = Math.min(100, Math.round((hRecent / 30) * 100));
+      return `<div class="habit-stat-item">
+        <div class="habit-stat-header">
+          <span class="habit-icon">${h.ikon || '🌱'}</span>
+          <span class="habit-stat-name">${escapeHtml(h.nama)}</span>
+          <span class="habit-stat-rate">${hRate}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width:${hRate}%;background:${h.warna || '#10b981'}"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderDailyChart() {
+    const habits = activeHabits();
+    const period = state.chartPeriod || 7;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const days = [];
+    for (let i = period - 1; i >= 0; i--) {
+      const d = new Date(today); d.setDate(today.getDate() - i); days.push(d);
+    }
+    const chart = $('#dailyBarChart');
+    if (!chart) return;
+    if (!habits.length) {
+      chart.innerHTML = '<div class="mood-empty">Tambahkan kebiasaan untuk melihat diagram</div>';
+      $('#chartAvg').textContent = '';
+      return;
+    }
+    let sumPct = 0, counted = 0;
+    const todayS = todayStr();
+    chart.innerHTML = days.map((d) => {
+      const ds = formatDate(d);
+      const isToday = ds === todayS;
+      const isFuture = d > today;
+      const rest = isRestDay(ds);
+      let pct = 0;
+      if (!isFuture && !rest && habits.length) {
+        const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+        const done = scheduled.filter((h) => isDoneOn(h.id, ds)).length;
+        pct = scheduled.length ? Math.round((done / scheduled.length) * 100) : 0;
+        sumPct += pct; counted++;
+      }
+      const dayNames = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+      const label = period <= 7 ? dayNames[d.getDay()] : d.getDate() + '/' + (d.getMonth()+1);
+      return `<div class="bar-col">
+        <div class="bar-fill-wrap">
+          <div class="bar-fill ${pct === 0 && !isFuture && !rest ? 'zero' : ''} ${isToday ? 'today' : ''}" style="height:${isFuture || rest ? (rest ? 20 : 0) : pct}%;${rest ? 'background:#fde68a' : ''}">
+            <span class="bar-value">${isFuture ? '' : (rest ? '🏖️' : pct + '%')}</span>
+          </div>
+        </div>
+        <div class="bar-label ${isToday ? 'today-label' : ''}">${label}</div>
+      </div>`;
+    }).join('');
+    const avg = counted ? Math.round(sumPct / counted) : 0;
+    $('#chartAvg').innerHTML = `Rata-rata <strong>${avg}%</strong> · ${period} hari terakhir`;
+  }
+
+  function renderCompareChart() {
+    const habits = activeHabits();
+    const el = $('#compareChart');
+    if (!el) return;
+    if (!habits.length) { el.innerHTML = '<div class="mood-empty">Belum ada data</div>'; return; }
+    const thirtyAgo = new Date(); thirtyAgo.setDate(thirtyAgo.getDate() - 30);
+    const counts = habits.map((h) => {
+      const c = state.logs.filter((l) => l.habit_id === h.id && l.selesai && parseDate(l.tanggal) >= thirtyAgo).length;
+      return { h, c };
+    }).sort((a, b) => b.c - a.c);
+    const maxC = Math.max(...counts.map((x) => x.c), 1);
+    el.innerHTML = counts.map(({ h, c }) => `
+      <div class="compare-row">
+        <span class="compare-icon">${h.ikon || '🌱'}</span>
+        <span class="compare-name">${escapeHtml(h.nama)}</span>
+        <div class="compare-bar-track"><div class="compare-bar-fill" style="width:${Math.round((c/maxC)*100)}%;background:${h.warna || '#10b981'}"></div></div>
+        <span class="compare-val">${c}</span>
+      </div>`).join('');
+  }
+
+  function renderMoodChart() {
+    const el = $('#moodChart');
+    if (!el) return;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const moodColors = { 1:'#f87171', 2:'#fb923c', 3:'#fbbf24', 4:'#86efac', 5:'#34d399' };
+    const days = [];
+    for (let i = 13; i >= 0; i--) { const d = new Date(today); d.setDate(today.getDate() - i); days.push(d); }
+    if (!days.some((d) => state.moods[formatDate(d)])) {
+      el.innerHTML = '<div class="mood-empty">Catat mood di Hari Ini untuk melihat tren</div>';
+      return;
+    }
+    el.innerHTML = days.map((d) => {
+      const ds = formatDate(d);
+      const m = state.moods[ds] || 0;
+      const h = m ? (m / 5) * 100 : 4;
+      return `<div class="mood-col" title="${ds}${m ? ': mood '+m : ''}">
+        <div class="mood-dot" style="height:${h}%;background:${m ? moodColors[m] : '#e2e8f0'}"></div>
+        <div class="mood-col-label">${d.getDate()}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderInsights() {
+    const habits = activeHabits();
+    const dayNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const byDow = [0,0,0,0,0,0,0], cntDow = [0,0,0,0,0,0,0];
+    if (habits.length) {
+      for (let i = 0; i < 60; i++) {
+        const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0,0,0,0);
+        const ds = formatDate(d);
+        if (isRestDay(ds)) continue;
+        const scheduled = habits.filter((h) => isScheduledToday(h, ds));
+        if (!scheduled.length) continue;
+        const done = scheduled.filter((h) => isDoneOn(h.id, ds)).length;
+        const pct = (done / scheduled.length) * 100;
+        byDow[d.getDay()] += pct;
+        cntDow[d.getDay()]++;
+      }
+    }
+    let bestDow = 0, bestAvg = -1;
+    for (let i = 0; i < 7; i++) {
+      const avg = cntDow[i] ? byDow[i] / cntDow[i] : 0;
+      if (avg > bestAvg) { bestAvg = avg; bestDow = i; }
+    }
+    if ($('#insightBestDay')) {
+      if (bestAvg < 0 || !habits.length) {
+        $('#insightBestDay').textContent = '–';
+        $('#insightBestSub').textContent = 'belum cukup data';
+      } else {
+        $('#insightBestDay').textContent = dayNames[bestDow];
+        $('#insightBestSub').textContent = `rata-rata ${Math.round(bestAvg)}%`;
+      }
+    }
+    const thirtyAgo = new Date(); thirtyAgo.setDate(thirtyAgo.getDate() - 30);
+    let topH = null, topC = -1;
+    habits.forEach((h) => {
+      const c = state.logs.filter((l) => l.habit_id === h.id && l.selesai && parseDate(l.tanggal) >= thirtyAgo).length;
+      if (c > topC) { topC = c; topH = h; }
+    });
+    if ($('#insightTopHabit')) {
+      if (!topH) {
+        $('#insightTopHabit').textContent = '–';
+        $('#insightTopSub').textContent = 'belum ada data';
+      } else {
+        $('#insightTopHabit').textContent = (topH.ikon || '') + ' ' + topH.nama;
+        $('#insightTopSub').textContent = `${topC}x dalam 30 hari`;
+      }
+    }
+  }
+
+  function renderStreak() {
+    const s = calcStreak();
+    $('#streakValue').textContent = s;
+    const subs = ['Mulai hari ini!', 'Bagus api!', 'Terus jaga!', 'Luar biasa!', 'Legenda!'];
+    let si = 0;
+    if (s >= 30) si = 4; else if (s >= 14) si = 3; else if (s >= 7) si = 2; else if (s >= 1) si = 1;
+    $('#streakSub').textContent = isRestDay() ? 'Istirahat — streak aman' : subs[si];
+  }
+
+  function renderBadges() {
+    const stats = {
+      totalDone: state.logs.filter((l) => l.selesai).length,
+      longest: calcLongestStreak(),
+      habitCount: activeHabits().length,
+      perfectDays: countPerfectDays(),
+      journalCount: state.journals.length,
+      moodCount: Object.keys(state.moods).length,
+      level: getLevel(state.xp),
+    };
+    let unlocked = 0;
+    $('#badgesGrid').innerHTML = BADGES.map((b) => {
+      const ok = b.check(stats);
+      if (ok) unlocked++;
+      return `<div class="badge-card ${ok ? 'unlocked' : ''}">
+        <div class="badge-emoji">${b.emoji}</div>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+      </div>`;
+    }).join('');
+    $('#badgeCount').textContent = `${unlocked}/${BADGES.length}`;
+  }
+
+  function renderJournal() {
+    $('#journalDate').textContent = todayStr();
+    const existing = state.journals.find((j) => j.tanggal === todayStr());
+    $('#journalText').value = existing ? existing.isi : '';
+    const hist = state.journals.slice().sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 10);
+    const moodEmoji = { 1:'😢', 2:'😕', 3:'😐', 4:'🙂', 5:'😄' };
+    if (!hist.length) {
+      $('#journalHistory').innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><h3>Belum ada jurnal</h3></div>';
+      return;
+    }
+    $('#journalHistory').innerHTML = hist.map((j) => {
+      const m = state.moods[j.tanggal];
+      return `<div class="journal-entry">
+        ${m ? `<span class="journal-entry-mood">${moodEmoji[m] || ''}</span>` : ''}
+        <div class="journal-entry-date">${j.tanggal}</div>
+        <div class="journal-entry-text">${escapeHtml(j.isi)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ---- Share card ----
+  function generateShareCard() {
+    const canvas = $('#shareCanvas');
+    const ctx = canvas.getContext('2d');
+    const w = 600, h = 400;
+    canvas.width = w; canvas.height = h;
+
+    // background
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#ecfdf5');
+    grad.addColorStop(1, '#f3e8ff');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // border
+    ctx.strokeStyle = '#a7f3d0';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(12, 12, w - 24, h - 24);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 28px Inter, sans-serif';
+    ctx.fillText('🌿 Ruang Tumbuh', 40, 55);
+
+    const streak = calcStreak();
+    const { lv } = xpProgress(state.xp);
+    const thisPct = weekCompletionPct(0);
+    const totalDone = state.logs.filter((l) => l.selesai).length;
+
+    ctx.font = 'bold 48px Inter, sans-serif';
+    ctx.fillStyle = '#059669';
+    ctx.fillText(`🔥 ${streak} hari`, 40, 130);
+
+    ctx.font = '20px Inter, sans-serif';
+    ctx.fillStyle = '#64748b';
+    ctx.fillText(`Level ${lv}  ·  ${state.xp} XP  ·  ${totalDone} selesai`, 40, 170);
+    ctx.fillText(`Minggu ini: ${thisPct}% konsistensi`, 40, 205);
+
+    ctx.font = '16px Inter, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), 40, 250);
+
+    ctx.font = 'italic 15px Inter, sans-serif';
+    ctx.fillStyle = '#7c3aed';
+    ctx.fillText('"Tumbuh itu pelan, tapi pasti."', 40, 320);
+
+    ctx.font = '13px Inter, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('ruang-tumbuh · progress card', 40, 360);
+
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ruang-tumbuh-${todayStr()}.png`;
+      a.click();
+      toast('Kartu progres diunduh 📸');
+    });
+  }
+
+  // ---- Modal habit ----
+  function openModal(id) {
+    state.editingId = id || null;
+    state.selectedDays = [];
+    $('#modalTitle').textContent = id ? 'Edit Kebiasaan' : 'Tambah Kebiasaan';
+    $$('.day-chip').forEach((c) => c.classList.remove('active'));
+    if (id) {
+      const h = state.habits.find((x) => x.id === id);
+      if (h) {
+        $('#habitId').value = h.id;
+        $('#habitName').value = h.nama;
+        $('#habitIcon').value = h.ikon || '🌱';
+        $('#habitColor').value = h.warna || '#10b981';
+        $('#habitTarget').value = h.target_mingguan || 7;
+        $('#habitCategory').value = h.kategori || 'lainnya';
+        $('#habitFreq').value = h.freq || 'daily';
+        $('#habitReminder').value = h.reminder || '';
+        $('#habitSkip').value = h.skip_allowance || 0;
+        state.selectedDays = (h.days || []).map(Number);
+        state.selectedDays.forEach((d) => {
+          const chip = $(`.day-chip[data-day="${d}"]`);
+          if (chip) chip.classList.add('active');
+        });
+      }
+    } else {
+      $('#habitForm').reset();
+      $('#habitId').value = '';
+      $('#habitTarget').value = 7;
+      $('#habitSkip').value = 0;
+    }
+    toggleFreqUI();
+    $('#habitModal').classList.add('open');
+    setTimeout(() => $('#habitName').focus(), 100);
+  }
+  function closeModal() { $('#habitModal').classList.remove('open'); state.editingId = null; }
+  function toggleFreqUI() {
+    const freq = $('#habitFreq').value;
+    $('#daysRow').style.display = freq === 'custom_days' ? 'block' : 'none';
+  }
+
+  // ---- Templates ----
+  function openTemplates() {
+    $('#templateList').innerHTML = TEMPLATES.map((t) => `
+      <div class="template-card" data-tid="${t.id}">
+        <h4>${t.name}</h4>
+        <p>${t.desc}</p>
+        <div class="template-habits">${t.habits.map((h) => h.ikon + ' ' + h.nama).join(' · ')}</div>
+      </div>`).join('');
+    $('#templateList').querySelectorAll('.template-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        const t = TEMPLATES.find((x) => x.id === card.dataset.tid);
+        if (!t) return;
+        t.habits.forEach((h) => {
+          const habit = {
+            id: uid(), nama: h.nama, ikon: h.ikon, warna: h.warna,
+            kategori: h.kategori, target_mingguan: h.target_mingguan,
+            freq: 'daily', aktif: true, archived: false, days: [], skip_allowance: 0, reminder: '',
+          };
+          state.habits.push(habit);
+          pushHabit(habit);
+        });
+        $('#templateModal').classList.remove('open');
+        renderHabits(); renderToday();
+        toast(`Template "${t.name}" ditambahkan`);
+      });
+    });
+    $('#templateModal').classList.add('open');
+  }
+
+  // ---- Focus ----
+  function openFocus() {
+    const habits = activeHabits();
+    $('#focusPickList').innerHTML = habits.map((h) => `
+      <label class="focus-pick-item ${state.focusIds.includes(h.id) ? 'selected' : ''}">
+        <input type="checkbox" value="${h.id}" ${state.focusIds.includes(h.id) ? 'checked' : ''} />
+        <span>${h.ikon || '🌱'} ${escapeHtml(h.nama)}</span>
+      </label>`).join('');
+    $('#focusPickList').querySelectorAll('input').forEach((inp) => {
+      inp.addEventListener('change', () => {
+        const checked = [...$('#focusPickList').querySelectorAll('input:checked')];
+        if (checked.length > 3) {
+          inp.checked = false;
+          toastWarning('Maksimal 3 fokus');
+        }
+        inp.closest('.focus-pick-item').classList.toggle('selected', inp.checked);
+      });
+    });
+    $('#focusModal').classList.add('open');
+  }
+
+  // ---- Nav ----
+  function navigate(page) {
+    state.currentPage = page;
+    $$('.nav-item').forEach((n) => n.classList.toggle('active', n.dataset.page === page));
+    $$('.page').forEach((p) => p.classList.toggle('active', p.id === 'page-' + page));
+    const titles = {
+      'hari-ini':'Hari Ini', kebiasaan:'Kebiasaan', progres:'Progres Mingguan',
+      heatmap:'Kalender', statistik:'Statistik', pencapaian:'Pencapaian',
+      jurnal:'Jurnal Harian', panduan:'Panduan', pengaturan:'Pengaturan',
+    };
+    $('#pageTitle').textContent = titles[page] || page;
+    if (page === 'hari-ini') { renderQuote(); renderToday(); }
+    if (page === 'kebiasaan') renderHabits();
+    if (page === 'progres') renderWeek();
+    if (page === 'heatmap') renderHeatmap();
+    if (page === 'statistik') renderStats();
+    if (page === 'pencapaian') renderBadges();
+    if (page === 'jurnal') renderJournal();
+    if (page === 'pengaturan') updateSyncTime();
+    $('#sidebar').classList.remove('open');
+    $('#sidebarOverlay').classList.remove('open');
+  }
+
+  function updateConnectionStatus(status) {
+    const dot = document.querySelector('.status-dot');
+    const text = document.querySelector('.status-text');
+    if (!dot || !text) return;
+    dot.className = 'status-dot';
+    if (status === 'connected') { dot.classList.add('connected'); text.textContent = 'Terhubung ke Google Sheets'; }
+    else if (status === 'error') { dot.classList.add('error'); text.textContent = 'Gagal terhubung — mode lokal'; }
+    else text.textContent = 'Belum terhubung (mode lokal)';
+  }
+  function updateSyncTime() {
+    const el = $('#syncTime');
+    if (!el) return;
+    if (state.lastSync) {
+      const d = new Date(state.lastSync);
+      el.textContent = 'Sync terakhir: ' + d.toLocaleString('id-ID');
+    } else el.textContent = '';
+    updateQueueUI();
+  }
+
+  function importData(obj) {
+    if (!obj || !Array.isArray(obj.habits)) throw new Error('Format tidak valid');
+    state.habits = obj.habits || [];
+    state.logs = obj.logs || [];
+    state.journals = obj.journals || [];
+    state.moods = obj.moods || {};
+    state.restDays = obj.restDays || [];
+    state.focusIds = obj.focusIds || [];
+    state.xp = Number(obj.xp) || 0;
+    saveLocal();
+  }
+
+  function startOnboarding() {
+    if (state.onboarded) return;
+    const modal = $('#onboardModal');
+    if (!modal) return;
+    $('#onboardTemplates').innerHTML = '<div class="onboard-tpl">' +
+      TEMPLATES.map((t) => `<button type="button" data-tid="${t.id}">${t.name} — ${t.desc}</button>`).join('') +
+      '</div>';
+    $('#onboardTemplates').querySelectorAll('button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const t = TEMPLATES.find((x) => x.id === btn.dataset.tid);
+        if (!t) return;
+        t.habits.forEach((h) => {
+          const habit = {
+            id: uid(), nama: h.nama, ikon: h.ikon, warna: h.warna,
+            kategori: h.kategori, target_mingguan: h.target_mingguan,
+            freq: 'daily', aktif: true, archived: false, days: [], skip_allowance: 0, reminder: '',
+          };
+          state.habits.push(habit);
+          pushHabit(habit);
+        });
+        saveLocal();
+        goOnboardStep(2);
+        toast('Template ditambahkan');
+      });
+    });
+    modal.classList.add('open');
+  }
+
+  function goOnboardStep(n) {
+    $$('.onboard-step').forEach((s) => {
+      s.style.display = Number(s.dataset.step) === n ? 'block' : 'none';
+    });
+  }
+
+  function finishOnboarding() {
+    state.onboarded = true;
+    localStorage.setItem('rt_onboarded', '1');
+    $('#onboardModal').classList.remove('open');
+    renderToday(); renderHabits(); renderLevel();
+    navigate('hari-ini');
+    toast('Selamat tumbuh! 🌱');
+  }
+
+  // ---- Init ----
+  async function init() {
+    const now = new Date();
+    $('#currentDate').textContent = now.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    if (state.gasUrl) $('#gasUrl').value = state.gasUrl;
+    $('#prefConfetti').checked = state.prefConfetti;
+    $('#prefQuote').checked = state.prefQuote;
+    $('#prefDark').checked = state.prefDark;
+    applyTheme();
+
+    const connected = await syncFromGas();
+    updateConnectionStatus(state.gasUrl ? (connected ? 'connected' : 'error') : 'local');
+    updateSyncTime();
+
+    if (!state.habits.length && !state.gasUrl) {
+      state.habits = [
+        { id: uid(), nama: 'Minum 8 gelas air', ikon: '💧', warna: '#3b82f6', target_mingguan: 7, kategori: 'kesehatan', freq: 'daily', aktif: true, archived: false, days: [], skip_allowance: 0, reminder: '' },
+        { id: uid(), nama: 'Baca 20 menit', ikon: '📚', warna: '#8b5cf6', target_mingguan: 5, kategori: 'produktivitas', freq: 'weekly', aktif: true, archived: false, days: [], skip_allowance: 1, reminder: '' },
+        { id: uid(), nama: 'Olahraga ringan', ikon: '🏃', warna: '#10b981', target_mingguan: 4, kategori: 'kesehatan', freq: 'weekly', aktif: true, archived: false, days: [], skip_allowance: 0, reminder: '' },
+        { id: uid(), nama: 'Meditasi 5 menit', ikon: '🧘', warna: '#ec4899', target_mingguan: 7, kategori: 'mindfulness', freq: 'daily', aktif: true, archived: false, days: [], skip_allowance: 0, reminder: '07:00' },
+      ];
+      saveLocal();
+    }
+
+    renderQuote(); renderToday(); renderStreak(); renderStats(); renderLevel();
+
+    // reminder check every minute
+    setInterval(checkReminders, 60000);
+    checkReminders();
+
+    // Offline sync queue: auto-flush when back online
+    window.addEventListener('online', async () => {
+      state.isOnline = true;
+      updateQueueUI();
+      if (state.gasUrl && state.syncQueue.length) {
+        toast('Online — mengirim antrean sync...');
+        const r = await flushSyncQueue();
+        if (r.ok) toast(`Sync: ${r.ok} terkirim` + (r.fail ? `, ${r.fail} gagal` : ''));
+      } else {
+        updateQueueUI();
+      }
+    });
+    window.addEventListener('offline', () => {
+      state.isOnline = false;
+      updateQueueUI();
+      if (state.gasUrl) toastWarning('Offline — perubahan akan diantrekan');
+    });
+    updateQueueUI();
+
+    // Onboarding for first visit
+    if (!state.onboarded && !state.habits.length) {
+      // seed will add demo habits - for true first visit without demo:
+    }
+    if (!state.onboarded) {
+      setTimeout(startOnboarding, 400);
+    }
+
+    // PWA install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      state.deferredInstallPrompt = e;
+      const btn = $('#btnInstallPwa');
+      if (btn) btn.style.display = 'inline-flex';
+      const st = $('#pwaStatus');
+      if (st) st.textContent = 'Siap diinstall ke perangkatmu.';
+    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // Events
+    $$('.nav-item').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.page)));
+    $$('[data-goto]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.goto)));
+    $('#menuToggle').addEventListener('click', () => { $('#sidebar').classList.add('open'); $('#sidebarOverlay').classList.add('open'); });
+    $('#sidebarClose').addEventListener('click', () => { $('#sidebar').classList.remove('open'); $('#sidebarOverlay').classList.remove('open'); });
+    $('#sidebarOverlay').addEventListener('click', () => { $('#sidebar').classList.remove('open'); $('#sidebarOverlay').classList.remove('open'); });
+
+    // Rest day
+    $('#btnRestDay').addEventListener('click', () => {
+      const t = todayStr();
+      if (isRestDay(t)) {
+        state.restDays = state.restDays.filter((d) => d !== t);
+        toast('Hari istirahat dibatalkan');
+      } else {
+        state.restDays.push(t);
+        toast('Hari ini ditandai istirahat — streak aman 🏖️');
+      }
+      saveLocal();
+      renderToday(); renderStreak(); renderWeek();
+    });
+
+    // Focus
+    $('#btnFocusPick').addEventListener('click', openFocus);
+    $('#focusClose').addEventListener('click', () => $('#focusModal').classList.remove('open'));
+    $('#focusSave').addEventListener('click', () => {
+      state.focusIds = [...$('#focusPickList').querySelectorAll('input:checked')].map((i) => i.value).slice(0, 3);
+      saveLocal();
+      $('#focusModal').classList.remove('open');
+      renderToday();
+      toast(state.focusIds.length ? 'Fokus disimpan ⭐' : 'Fokus dikosongkan');
+    });
+
+    // Note modal
+    $('#noteModalClose').addEventListener('click', () => { $('#noteModal').classList.remove('open'); state.pendingNoteHabit = null; });
+    $('#noteSkip').addEventListener('click', () => {
+      if (state.pendingNoteHabit) { toggleLog(state.pendingNoteHabit); afterToggle(); }
+      $('#noteModal').classList.remove('open');
+      state.pendingNoteHabit = null;
+    });
+    $('#noteSave').addEventListener('click', () => {
+      if (state.pendingNoteHabit) {
+        toggleLog(state.pendingNoteHabit, $('#noteInput').value.trim());
+        afterToggle();
+      }
+      $('#noteModal').classList.remove('open');
+      state.pendingNoteHabit = null;
+    });
+
+    // Habit modal
+    $('#btnAddHabit').addEventListener('click', () => openModal());
+    $('#btnAddHabitEmpty').addEventListener('click', () => openModal());
+    $('#modalClose').addEventListener('click', closeModal);
+    $('#modalCancel').addEventListener('click', closeModal);
+    $('#habitModal').addEventListener('click', (e) => { if (e.target === $('#habitModal')) closeModal(); });
+    $('#habitFreq').addEventListener('change', toggleFreqUI);
+    $$('.day-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('active');
+        const d = Number(chip.dataset.day);
+        if (chip.classList.contains('active')) {
+          if (!state.selectedDays.includes(d)) state.selectedDays.push(d);
+        } else {
+          state.selectedDays = state.selectedDays.filter((x) => x !== d);
+        }
+      });
+    });
+
+    $('#habitForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = $('#habitId').value || uid();
+      const habit = {
+        id,
+        nama: $('#habitName').value.trim(),
+        ikon: $('#habitIcon').value,
+        warna: $('#habitColor').value,
+        target_mingguan: parseInt($('#habitTarget').value, 10) || 7,
+        kategori: $('#habitCategory').value || 'lainnya',
+        freq: $('#habitFreq').value || 'daily',
+        days: state.selectedDays.slice(),
+        reminder: $('#habitReminder').value || '',
+        skip_allowance: parseInt($('#habitSkip').value, 10) || 0,
+        aktif: true,
+        archived: false,
+      };
+      const idx = state.habits.findIndex((h) => h.id === id);
+      if (idx >= 0) {
+        habit.archived = state.habits[idx].archived || false;
+        state.habits[idx] = { ...state.habits[idx], ...habit };
+      } else state.habits.push(habit);
+      await pushHabit(habit);
+      closeModal();
+      renderHabits(); renderToday();
+      toast(idx >= 0 ? 'Diperbarui' : 'Ditambahkan');
+    });
+
+    // Templates
+    $('#btnTemplates').addEventListener('click', openTemplates);
+    $('#btnTemplatesEmpty').addEventListener('click', openTemplates);
+    $('#templateClose').addEventListener('click', () => $('#templateModal').classList.remove('open'));
+
+    // Category
+    $$('#categoryFilter .chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        $$('#categoryFilter .chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.categoryFilter = chip.dataset.cat;
+        renderHabits();
+      });
+    });
+
+    // Mood
+    $$('.mood-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mood = Number(btn.dataset.mood);
+        state.moods[todayStr()] = mood;
+        saveLocal();
+        $$('.mood-btn').forEach((b) => b.classList.toggle('active', Number(b.dataset.mood) === mood));
+        toast('Mood tersimpan');
+      });
+    });
+
+    // Chart period
+    $$('.chart-period-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        $$('.chart-period-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.chartPeriod = parseInt(btn.dataset.period, 10);
+        renderDailyChart();
+      });
+    });
+
+    // Heatmap
+    $('#heatPrev').addEventListener('click', () => { state.heatMonth.setMonth(state.heatMonth.getMonth() - 1); renderHeatmap(); });
+    $('#heatNext').addEventListener('click', () => { state.heatMonth.setMonth(state.heatMonth.getMonth() + 1); renderHeatmap(); });
+
+    // Journal
+    $('#btnSaveJournal').addEventListener('click', () => {
+      const isi = $('#journalText').value.trim();
+      if (!isi) { toastWarning('Tulis sesuatu dulu'); return; }
+      const t = todayStr();
+      const idx = state.journals.findIndex((j) => j.tanggal === t);
+      if (idx >= 0) state.journals[idx].isi = isi;
+      else state.journals.push({ tanggal: t, isi });
+      saveLocal();
+      renderJournal();
+      toast('Jurnal disimpan 💚');
+    });
+
+    // Share
+    $('#shareBtn').addEventListener('click', generateShareCard);
+
+    // Settings
+    $('#btnSaveGas').addEventListener('click', async () => {
+      const url = $('#gasUrl').value.trim();
+      state.gasUrl = url;
+      if (url) localStorage.setItem('rt_gas_url', url); else localStorage.removeItem('rt_gas_url');
+      const ok = await syncFromGas();
+      updateConnectionStatus(url ? (ok ? 'connected' : 'error') : 'local');
+      updateSyncTime();
+      renderToday(); renderHabits(); renderWeek(); renderStats(); renderStreak();
+      toast(url ? (ok ? 'Terhubung!' : 'URL disimpan, gagal terhubung') : 'Mode lokal', url ? (ok ? 'success' : 'error') : 'info');
+    });
+    $('#btnTestGas').addEventListener('click', async () => {
+      const url = $('#gasUrl').value.trim();
+      if (!url) { toastWarning('Masukkan URL dulu'); return; }
+      state.gasUrl = url;
+      toast('Menguji...');
+      const ok = await syncFromGas();
+      updateConnectionStatus(ok ? 'connected' : 'error');
+      updateSyncTime();
+      toast(ok ? 'Berhasil!' : 'Gagal', ok ? 'success' : 'error');
+    });
+    $('#btnForceSync').addEventListener('click', async () => {
+      toast('Sync...');
+      const queued = state.syncQueue.length;
+      const ok = await syncFromGas();
+      updateConnectionStatus(state.gasUrl ? (ok ? 'connected' : 'error') : 'local');
+      updateSyncTime();
+      renderToday(); renderHabits(); renderWeek(); renderStats(); renderStreak(); renderLevel();
+      const left = state.syncQueue.length;
+      if (ok && queued && !left) toast('Sync berhasil — antrean kosong');
+      else if (ok) toast('Sync berhasil');
+      else if (left) toast(`Offline/gagal — ${left} masih di antrean`);
+      else toast('Sync gagal / mode lokal');
+    });
+
+    $('#btnNotifPerm').addEventListener('click', async () => {
+      if (!('Notification' in window)) { $('#notifStatus').textContent = 'Browser tidak mendukung notifikasi'; return; }
+      const perm = await Notification.requestPermission();
+      $('#notifStatus').textContent = perm === 'granted' ? 'Notifikasi aktif ✓' : 'Izin ditolak';
+      if (perm === 'granted') toast('Notifikasi diaktifkan');
+    });
+    if ('Notification' in window) {
+      $('#notifStatus').textContent = Notification.permission === 'granted' ? 'Notifikasi aktif ✓' :
+        Notification.permission === 'denied' ? 'Izin ditolak' : 'Belum diizinkan';
+    }
+
+    $('#prefConfetti').addEventListener('change', () => {
+      state.prefConfetti = $('#prefConfetti').checked;
+      localStorage.setItem('rt_pref_confetti', state.prefConfetti ? '1' : '0');
+    });
+    $('#prefQuote').addEventListener('change', () => {
+      state.prefQuote = $('#prefQuote').checked;
+      localStorage.setItem('rt_pref_quote', state.prefQuote ? '1' : '0');
+      renderQuote();
+    });
+    $('#prefDark').addEventListener('change', () => {
+      state.prefDark = $('#prefDark').checked;
+      localStorage.setItem('rt_pref_dark', state.prefDark ? '1' : '0');
+      applyTheme();
+    });
+    $('#themeToggle').addEventListener('click', () => {
+      state.prefDark = !state.prefDark;
+      localStorage.setItem('rt_pref_dark', state.prefDark ? '1' : '0');
+      $('#prefDark').checked = state.prefDark;
+      applyTheme();
+    });
+
+    // Undo
+    $('#undoBtn').addEventListener('click', () => {
+      if (state.undoStack) {
+        state.undoStack();
+        state.undoStack = null;
+        if (state.undoTimer) clearTimeout(state.undoTimer);
+        $('#undoBar').style.display = 'none';
+      }
+    });
+
+    // Import
+    $('#btnImportData').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const obj = JSON.parse(reader.result);
+          if (!confirm('Impor akan menimpa data lokal saat ini. Lanjutkan?')) return;
+          importData(obj);
+          renderToday(); renderHabits(); renderWeek(); renderStats(); renderStreak();
+          renderBadges(); renderJournal(); renderLevel(); renderHeatmap();
+          toast('Data berhasil diimpor');
+        } catch (err) {
+          toastError('Gagal impor: ' + err.message);
+        }
+        e.target.value = '';
+      };
+      reader.readAsText(file);
+    });
+
+    // Onboarding buttons
+    $('#onboardSkipTpl').addEventListener('click', () => goOnboardStep(2));
+    $('#onboardNotif').addEventListener('click', async () => {
+      if ('Notification' in window) await Notification.requestPermission();
+      goOnboardStep(3);
+    });
+    $('#onboardSkipNotif').addEventListener('click', () => goOnboardStep(3));
+    $('#onboardDone').addEventListener('click', finishOnboarding);
+
+    // PWA install
+    $('#btnInstallPwa').addEventListener('click', async () => {
+      if (!state.deferredInstallPrompt) return;
+      state.deferredInstallPrompt.prompt();
+      const choice = await state.deferredInstallPrompt.userChoice;
+      if (choice.outcome === 'accepted') toast('Terinstall!');
+      state.deferredInstallPrompt = null;
+      $('#btnInstallPwa').style.display = 'none';
+    });
+
+    $('#btnExportData').addEventListener('click', () => {
+      const data = { habits: state.habits, logs: state.logs, journals: state.journals, moods: state.moods, restDays: state.restDays, focusIds: state.focusIds, xp: state.xp, exported: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ruang-tumbuh-${todayStr()}.json`; a.click();
+      toast('JSON diekspor');
+    });
+    $('#btnExportCsv').addEventListener('click', () => {
+      const nameMap = {};
+      state.habits.forEach((h) => { nameMap[h.id] = h.nama; });
+      const rows = [['tanggal','habit_id','nama','selesai','catatan']];
+      state.logs.forEach((l) => rows.push([l.tanggal, l.habit_id, nameMap[l.habit_id] || '', l.selesai ? '1' : '0', l.note || '']));
+      const csv = rows.map((r) => r.map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ruang-tumbuh-log-${todayStr()}.csv`; a.click();
+      toast('CSV diekspor');
+    });
+    $('#btnClearData').addEventListener('click', () => {
+      if (!confirm('Hapus semua data lokal?')) return;
+      state.habits = []; state.logs = []; state.journals = []; state.moods = {};
+      state.restDays = []; state.focusIds = []; state.xp = 0;
+      saveLocal();
+      renderToday(); renderHabits(); renderWeek(); renderStats(); renderStreak(); renderBadges(); renderJournal(); renderLevel();
+      toast('Data dihapus');
+    });
+
+    $('#refreshBtn').addEventListener('click', async () => {
+      toast('Sync...');
+      await syncFromGas();
+      updateSyncTime();
+      renderToday(); renderHabits(); renderWeek(); renderStats(); renderStreak(); renderHeatmap(); renderBadges(); renderLevel();
+      toast('Diperbarui');
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+
+  </script>
+</body>
+</html>
